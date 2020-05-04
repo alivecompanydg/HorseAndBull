@@ -1,0 +1,13 @@
+
+{
+    "horse": [
+        {
+            "nome": "Brave",
+            "velocidade":0
+        }
+    ],
+
+    "bull":[],
+
+    "cow":[]
+}

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horse and Bull</title>
+    <link rel="stylesheet" href="src/css/index.css">
+</head>
+<body>
+
+    <audio loop autoplay>
+        <source src="src/sounds/music_leonell_cassio_a_magical_journey_through_space.mp3" type="audio/mpeg">
+    </audio>
+
+    <center>
+    <script src="src/scripts/mattress.js"></script>
+
+    <script src="src/scripts/script.js"></script>
+
+    <div id="newPlayerForm" style="display: none;">
+        <form action="/cad" class="form" method="post" id="cadPlayerForm">
+        
+            <label>
+                <p>Nome: <input placeholder="Seu nome" type="text" id="name"></p>
+                <p>Email: <input placeholder="Seu email" type="email" id="email"></p>
+                <p>Senha: <input placeholder="Sua senha" type="password" id="senha"></p>
+                <p>Reescreva sua senha: <input placeholder="Sua senha" type="password" id="confsenha"></p>
+                <p>Qual a sua idade: <input type="number" placeholder="Sua idade" id="idade"></p>
+                <input type="button" value="Cadastrar" id="cadBtn" onclick="cadPlayer()">
+            </label>
+
+        </form>
+    </div>
+
+    <div id="menu" style="display: none;">
+
+            <h1 onclick="showMenu()" class="mainMenu"><w>HaB</w></h1>
+            <label><input type="text" class="noneBorder" readonly id="namePlayer"><input type="text" class="noneBorder" readonly id="coins"><input type="text" class="noneBorder" readonly id="EventCoins" onclick="withdraw()"></label>
+            
+    <div class="rightDiv" id="rightDiv">
+
+    </div>
+
+    <div class="bottomDiv">
+        <center>
+
+            <h3 style="color:white; margin-top:0px;">SOBRE</h3>
+
+            <input type="text" readonly class="about" id="hName" placeholder="nome"><input type="text" class="about" readonly id="hEndurence" placeholder="resistência"><br>
+            <input type="text" readonly class="about" id="hVelocity" placeholder="velocidade"><input type="text" class="about" readonly id="hMaxVelocity" placeholder="velocidade máxima">
+
+        </center>
+    </div>
+
+    <div class="leftDiv">
+            <br><a href="game.html"><button class="button">JOGAR</button></a><br>
+            <button class="button" onclick="findEvents(), changeDisplay(document.getElementById('menu')), changeDisplay(document.getElementById('allEvents'))">EVENTOS</button><br>
+            <button class="button" onclick="changeDisplay(document.getElementById('menu')), changeDisplay(document.getElementById('buyCoins'))">MOEDAS</button><br>
+            <a href="loja.html"><button class="button">LOJA</button></a>
+    </div>
+
+    </div>
+
+    <div id="allEvents" style="display: none;">
+
+        <div id="eventLeft"></div>
+        <div id="eventRight"></div>
+
+    </div>
+
+    <div id="buyCoins" style="display: none;">
+
+        <h1 onclick="showMenu()"><w>HaB</w></h1>
+            <input type="text" class="noneBorder" readonly id="Coins"><br><v>v</v>
+
+            <form action="/payment" id="form1" method="post">
+
+            <div id="item" class="saco">
+                <img src="img/saco.png" width="70" height="70">
+                <p style="font-size: 19px;"><h3>Saco</h3>contem 100 moedas</p>
+                <br>
+                <button class="button" onclick="prepareLinkToBuy('1', playerData.email)">R$10,00</button>
+            </div>
+
+            <div id="item" class="caixa">
+                <img src="img/box.png" width="70" height="70">
+                <p style="font-size: 19px;"><h3>Caixa</h3>contem 150 moedas</p>
+                <br>
+                <button class="button" onclick="prepareLinkToBuy('2', playerData.email)">R$15,00</button>
+            </div>
+
+            <div id="item" class="bau">
+                <img src="img/bau.png" width="70" height="70">
+                <p style="font-size: 19px;"><h3>Baú</h3>contem 200 moedas</p>
+                <br>
+                    <button class="button" onclick="prepareLinkToBuy('3', playerData.email)">R$20,00</button>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+
+    if(!localStorage.getItem("event")){
+        localStorage.setItem("event", "FALSE")
+    }else{
+        localStorage.setItem("event", "FALSE")
+    }
+
+    let playerData = ""
+
+    let hara = ""
+    let array = 0
+
+    let horseAnimate = 1
+
+    function passar(index) {
+        let tam = hara.horse.length - 1
+        if(index >= 0 && index <= tam){
+            setHorseData(index)
+            selectHorse(index)
+        }
+    }
+
+    function selectHorse(index){
+        let animal = JSON.stringify(hara.horse[index])
+        let email = playerData.email
+        
+        let url = `${host}/setAnimal?email=${email}&animal=${animal}`
+
+        fetch(url)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            console.log(data)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }
+
+    async function setHorseData(index){
+        await setDataFromPlayer("hName", `Nome: ${hara.horse[index].nome}`)
+        await setDataFromPlayer("hVelocity", `Velocidade: ${hara.horse[index].velocidade}`)
+        await setDataFromPlayer("hMaxVelocity", `Velocidade Máxima: ${hara.horse[index].velocidadeMaxima}`)
+        await setDataFromPlayer("hEndurence", `Resistência: ${hara.horse[index].float}`)
+
+        document.getElementById("rightDiv").innerHTML = `<center><button onclick="passar(${index-1})"><</button><img src="img/${hara.horse[index].nome}1.png" onclick="animateHorse(${index})" style="width:330px; height:250px; margin-top:6px;"><button onclick="passar(${index+1})">></button></center>`
+    }
+
+    const sounds = [
+        "relincho",
+        "cavalgada"
+    ]
+
+    const soundSrc = [
+        "src/sounds/HORSE.wav",
+        "src/sounds/HORSEGAL.wav"
+    ]
+
+    function animateHorse(index) {
+
+        mattress.playSound("relincho", sounds, soundSrc[0])
+        
+        let INTER = setInterval(() => {
+            document.getElementById("rightDiv").innerHTML = `<center><button onclick="passar(${index-1})"><</button><img src="img/${hara.horse[index].nome}${horseAnimate}.png" onclick="animateHorse(${index})" style="width:330px; height:250px; margin-top:6px;"><button onclick="passar(${index+1})">></button></center>`
+            if(horseAnimate === 4){
+                horseAnimate = 1
+                document.getElementById("rightDiv").innerHTML = `<center><button onclick="passar(${index-1})"><</button><image src="img/${hara.horse[index].nome}${horseAnimate}.png" onclick="animateHorse(${index})" style="width:330px; height:250px; margin-top:6px;"><button onclick="passar(${index+1})">></button></center>`
+                clearInterval(INTER)
+            }else{
+                horseAnimate++
+            }
+        }, 150)
+    }
+
+    function withdraw() {
+        
+        alert("Aqui você poderá solicitar o saque de moedas de evento através do Paypal")
+        let withdrawValue = parseInt(prompt("Quanto deseja solicitar o saque ? ( 10 moedas = R$1.00 )"))
+        
+        if(playerData.eventCoins >= withdrawValue){
+            let conf = confirm(`você deseja solictar o saque de R$${withdrawValue/10} ?`)
+
+            if(conf){
+
+                let playerPaypal = prompt("digite seu email(cadastrado no Paypal)")
+
+                if(playerPaypal != "" && playerPaypal){
+                    let url = `${host}/withdraw?playerEmail=${playerData.email}&playerPaypal=${playerPaypal}&withdrawValue=${withdrawValue}`
+
+                fetch(url)
+                .then((response) => {
+                    return response.json()
+                })
+                .then((data) => {
+                    alert(`Socilitação feita para ${playerPaypal}`)
+                })
+                .catch((err) => {
+                    alert("um erro ocorreu")
+                })
+                }
+                
+            }else{
+                alert("Socilitação recusada")
+            }
+
+        }else{
+            alert("Você não possui moedas o suficiete")
+        }
+
+    }
+
+    async function initGame(data) {
+        playerData = await data[0]
+        if(playerData.event && playerData.event !== ""){
+            playerEVENT = await playerData.event
+        }else{
+            playerEVENT = ""
+        }
+        hara = await JSON.parse(data[0].animals)
+        console.table(hara)
+        await setDataFromPlayer("namePlayer", playerData.name)
+        await setDataFromPlayer("coins", `M: ${playerData.coins}`)
+        await setDataFromPlayer("Coins", `M: ${playerData.coins}`)
+        await setDataFromPlayer("EventCoins", `ME: ${playerData.eventCoins}`)
+        await setHorseData(array)
+        document.getElementById("newPlayerForm").style.display = "none"
+        await changeDisplay(document.getElementById("menu"))
+    }
+
+    async function setDataFromPlayer(local, data) {
+        document.getElementById(`${local}`).value = `${data}`.toUpperCase()
+    }
+
+    function prepareLinkToBuy(index, email) {
+        let url = `${host}/payment?email=${email}&productId=${index}`
+        let form = document.getElementById(`form1`)
+        form.action = url
+        form.submit()
+    }
+
+    </script>
+</center>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horse and Bull - GAME</title>
+</head>
+<body>
+
+    <script src="src/scripts/mattress.js"></script>
+    <script src="src/scripts/script.js"></script>
+    
+
+    <script>
+
+    let event = ""
+
+    let playerData = ""
+    let horse = ""
+    let horseVelocity = 0
+
+    const states = {
+        ready: "Ready",
+        steady: "Steady",
+        run: "Run"
+    }
+
+    let gameState = states.ready
+
+    let FRAME = 10000
+
+    let PlayTime = 0
+
+    const sounds = [
+        "relincho",
+        "cavalgada"
+    ]
+
+    const soundSrc = [
+        "src/sounds/HORSE.wav",
+        "src/sounds/HORSEGAL.wav"
+    ]
+
+    const imgs = {
+        sky: new Image(),
+        trees: new Image(),
+        ground: new Image(),
+        point: new Image(),
+        player: new Image(),
+        horse: new Image()
+    }
+
+    let timeLeft = setInterval(() => {
+        try{
+
+            if(localStorage.getItem("event") === "TRUE"){
+                const json = JSON.parse(playerData.event)
+                statesUpdates.distance = parseInt(json.distance)
+                imgs.trees.src = "img/arquibancada.png"
+                parallax.srcWidth = 1920
+                parallax.srcHeight = 1080
+                event = true
+            }else{
+                event = false
+            }
+
+            loop()
+
+            /*if(playerData.event && playerData !== ""){
+                event = confirm("Você esta inscrito em um evento, gostaria de jogar por ele agora ?")
+                const json = JSON.parse(playerData.event)
+                if(event){
+                    statesUpdates.distance = parseInt(json.distance)
+                    imgs.trees.src = "img/arquibancada.png"
+                    parallax.srcWidth = 1920
+                    parallax.srcHeight = 1080
+                }
+            }else{
+                event = false
+            }*/
+
+        }catch(err){
+            if(err){
+                document.location.reload(false)
+
+            }else{
+                //document.location.reload(false)
+            }
+        }
+        clearInterval(timeLeft)
+    },1000)
+    
+
+    const ctx = mattress.createCanvas()
+    mattress.fullScrean()
+    mattress.center()
+
+    const buttonEvent = {
+        srcX: 0,
+        srcY: 0,
+        srcWidth: 1085,
+        srcHeight: 1085,
+        x:mattress.cnv.width - 3 * 32,
+        y: mattress.cnv.height / 2 - 32,
+        width:64,
+        height:64,
+        visible: false,
+        rectX:mattress.cnv.width - 2 * 32,
+        rectY:mattress.cnv.height / 2 - 32,
+        ray: 250,
+        decrement:6,
+        dividedBy: 3,
+
+        draw() {
+            ctx.fillStyle = "red"
+            ctx.fillRect(this.rectX, this.rectY - 120, 50, 120)
+            ctx.fillRect(this.rectX, this.rectY + Math.floor(horseVelocity/this.dividedBy), 50, 120)
+            ctx.fillStyle = "green"
+            ctx.fillRect(this.rectX, this.rectY, 50, Math.floor(horseVelocity/this.dividedBy))
+            ctx.drawImage(imgs.point, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x, this.y, this.width, this.height)
+        },
+
+        update() {
+            if(this.visible){
+                this.ray --
+            }else{
+                this.ray = 250
+            }
+            if(this.ray < 70){
+                this.visible = false
+            }
+            this.y -= this.decrement
+
+            if(this.y + this.width/2 <= this.rectY - 120){
+                this.decrement = -this.decrement
+            }
+            else if(this.y + this.width/2 >= this.rectY + Math.floor(horseVelocity/this.dividedBy) + 120) {
+                this.decrement = -this.decrement
+            }
+
+        }
+    }
+
+    const statesUpdates = {
+        time:0,
+        x: mattress.cnv.width/2 - 65,
+        y: mattress.cnv.height/2 - 30,
+        state: "",
+        distance:1000,
+        horseDistance:0,
+
+        draw: function() {
+            ctx.fillStyle = "black"
+            ctx.font = "40px Arial"
+            ctx.fillText(this.state.toUpperCase(), this.x, this.y, 130, 60)
+            ctx.font = "30px Arial"
+        },
+
+        drawDistance: function() {
+            ctx.fillStyle = "black"
+            ctx.font = "30px Arial"
+            ctx.fillText(`${this.horseDistance}/${this.distance}`, 40, 50, 160, 60)
+        },
+
+        updateDistance: function() {
+            
+            this.horseDistance ++
+
+            if(this.horseDistance >= this.distance){
+                gameState = states.steady
+                endGame(PlayTime)
+            }
+        },
+
+        update: function() {
+            if(player.x >= 50){
+                gameState = states.steady
+                this.time ++
+                if(this.time > 100 && statesUpdates.horseDistance <= 10000){
+                    gameState = states.run
+                }
+            }
+            this.state = gameState
+        }
+    }
+
+    const player = {
+        srcX:0,
+        srcY:0, //128 + 2
+        srcWidth:454,
+        srcHeight:340,
+        x:-600,
+        y:mattress.cnv.height - 277,
+        width:320,
+        height:270,
+        timer:0,
+        velocity:3,
+
+        draw: function() {
+            ctx.drawImage(imgs.player, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x, this.y, this.width, this.height)
+        },
+
+        update: function() {
+
+        if(gameState === states.ready && this.x <= 70){
+            this.x += 5
+        }
+
+        if(gameState !== states.steady){
+
+            this.timer++
+
+            if(this.timer >= 36) {
+                this.timer = 0
+            }
+
+            this.srcX = Math.floor(this.timer / this.velocity) * this.srcWidth
+
+        }
+
+        }
+    }
+
+    const parallax = {
+        x2: mattress.cnv.width,
+        x: 0,
+        y: 0,
+        width: mattress.cnv.width,
+        height: mattress.cnv.height,
+        srcX: 0,
+        srcY: 0,
+        srcWidth: 2500,
+        srcHeight: 1080,
+        velocity:5,
+
+        draw: function() {
+         ctx.drawImage(imgs.trees, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x, this.y, this.width, this.height)
+         ctx.drawImage(imgs.trees, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x2, this.y, this.width, this.height)
+        },
+
+        update: function() {
+            this.x -= this.velocity
+            if(this.x + this.width <= 0) {
+                if(this.x !== this.x2 + this.width){
+                    this.x = this.x2 + this.width - this.velocity
+                }else{
+                    this.x = this.x2 + this.width - this.velocity
+                }
+            }
+
+            this.x2 -= this.velocity
+            if(this.x2 + this.width <= 0) {
+                if(this.x2 !== this.x + this.width){
+                    this.x2 = this.x + this.width - 5
+                }else{
+                    this.x2 = this.x + this.width - 5
+                }
+            }
+        }
+    }
+
+    const ground = {
+        x2: mattress.cnv.width,
+        x: 0,
+        y: 0,
+        width: mattress.cnv.width,
+        height: mattress.cnv.height,
+        srcX: 0,
+        srcY: 0,
+        srcWidth: 1920,
+        srcHeight: 1080,
+        velocity:4.5,
+
+        draw: function() {
+            ctx.drawImage(imgs.ground, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x, this.y, this.width, this.height)
+            ctx.drawImage(imgs.ground, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x2, this.y, this.width, this.height)
+        },
+
+        update: function() {
+            this.x -= this.velocity
+            if(this.x + this.width <= 0) {
+                if(this.x !== this.x2 + this.width){
+                    this.x = this.x2 + this.width - 5
+                }else{
+                    this.x = this.x2 + this.width - 5
+                }
+            }
+
+            this.x2 -= this.velocity
+            if(this.x2 + this.width <= 0) {
+                if(this.x2 !== this.x + this.width){
+                    this.x2 = this.x + this.width - 5
+                }else{
+                    this.x2 = this.x + this.width - 5
+                }
+            }
+        }
+    }
+
+    let boost = 0
+
+    function calculateTime() {
+        PlayTime++
+        AC(PlayTime, statesUpdates.horseDistance, boost, (horseVelocity * 2.6))
+    }
+
+    setInterval(calculateTime, 1000)
+
+    function finalEvent(email, time) {
+        let date = new Date()
+        let day = date.getDate()
+        if(day < 10){
+            day = `0${day}`
+        }
+        let month = 1 + date.getMonth()
+        if(month < 10){
+            month = `0${month}`
+        }
+        let year = date.getFullYear()
+        let today = `${day}/${month}/${year}`,
+        eventName = JSON.parse(playerData.event).name
+
+
+        let url = `${host}/winner?email=${email}&time=${time}&eventName=${eventName}&today=${today}`
+
+        fetch(url)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            if(data.message){
+                alert(data.message)
+                window.location.href = "index.html"
+            }else{
+                alert("Parabens, você está em primeiro lugar no evento")
+                window.location.href = "index.html"
+            }
+        } )
+        .catch(err => {
+            alert(err)
+        })
+
+    }
+
+    async function endGame(playTime){
+        let min = Math.floor(playTime/60), sec = playTime % 60
+
+        if(min < 10){
+            min = `0${min}`
+        }
+        if(sec < 10){
+            sec = `0${sec}`
+        }
+
+        if(event){
+            await finalEvent(playerData.email, playTime)
+        }
+
+        alert(`Você terminou a corrida em ${min}:${sec}`)
+        
+        if(!event){
+            window.location.href = "index.html"
+        }
+
+    }
+
+    async function initGame(data) {
+        playerData = await data[0]
+        horse = await JSON.parse(playerData.principalAnimal)
+        horseVelocity = horse.velocidade
+
+        imgs.sky.src = "img/sky.png"
+        imgs.trees.src = "img/trees.png"
+        imgs.ground.src = "img/ground.png"
+        imgs.point.src = "img/point.png"
+        imgs.player.src = `img/${horse.nome}Sprite.png`
+        imgs.horse.src = "img/spriteHorse.png"
+    }
+
+    function loop() {
+        requestAnimationFrame(loop, mattress.cnv)
+        mattress.fullScrean()
+        update()
+        draw()
+    }
+
+    function clickEvent() {
+        if(gameState === states.run){
+            buttonEvent.visible = true
+        }
+        FRAME = 8000 + Math.floor(Math.random() *  2001)
+    }
+
+    setInterval(clickEvent, FRAME)
+
+    function update() {
+
+        if(localStorage.getItem("status") === "BAN"){
+            alert("Esta conta está banida!")
+            window.location.href = "index.html"
+        }
+
+        if(gameState !== states.steady ){
+            parallax.update()
+            if(!event){
+                ground.update()
+            }
+            //mattress.backgroundMusic("src/sounds/bensound-countryboy.mp3")
+        }
+
+        if(gameState === states.run) {
+            mattress.cnv.onclick = function() {
+                statesUpdates.updateDistance()
+                if(buttonEvent.visible){
+                    if(buttonEvent.y + buttonEvent.height/2 >= buttonEvent.rectY && buttonEvent.y + buttonEvent.height/2 <= buttonEvent.rectY + Math.floor(horseVelocity/buttonEvent.dividedBy)){
+                        statesUpdates.horseDistance += Math.floor(horseVelocity * 2.6)
+                        boost++
+                        mattress.playSound("relincho", sounds, soundSrc[0])
+                        parallax.velocity ++
+                    }
+                    buttonEvent.visible = false
+                }
+            }
+        }
+        player.update()
+        statesUpdates.update()
+        buttonEvent.update()
+    }
+
+    function draw() {
+        mattress.clear()
+        mattress.drawBackground(imgs.sky)
+        parallax.draw()
+        if(!event){
+            ground.draw()
+        }
+        player.draw()
+        statesUpdates.drawDistance()
+
+        if(statesUpdates.time < 150){
+            statesUpdates.draw()
+        }
+
+        if(buttonEvent.visible){
+            buttonEvent.draw()
+        }
+    }
+
+    </script>
+
+    <script src="src/scripts/mattressAnticheat.js"></script>
+
+</body>
+</html>

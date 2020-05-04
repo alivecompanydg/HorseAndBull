@@ -1,0 +1,584 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Painel</title>
+
+    <style>
+        table{
+            border:1px;
+        }
+        th, td {
+            text-align: center;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div id="container" style="display:none;">
+
+        <center><h1>Painel de Administrador</h1></center><br>
+
+        <div id="cadEvent">
+
+            <h2>Cadastrar novo evento</h2>
+
+            <form action="/newEvent" method="POST" id="formEvent">
+
+            <p>Nome: <input type="text" id="eventName"></p>
+            <p>Data: <input type="date" id="eventDate"></p>
+            <p>Preço: <input type="text" id="eventPrice"></p>
+            <p>Premio: <input type="text" id="eventPricePool"></p>
+            <p>Distância: <input type="text" style="width:200px;" placeholder="digite a distância em metros" id="eventDistance"></p>
+            <input type="button" value="Cadastrar novo evento" onclick="cadEvent()">
+
+            </form>
+        </div><hr>
+
+        <h2>Lista de players:</h2>
+
+        <div id="playersList">
+
+        </div><hr>
+
+        <h2>Algo deu errado com o pagamento do player?</h2>
+
+        <label> Digite seu email: <input type="email" name="emailPlayer" id="emailPlayer"> <input type="button" value="buscar" onclick="findPayment()"></label><br>
+
+        <div id="paymentDiv">
+
+        </div><hr>
+
+        <div id="newItem">
+
+        <center>
+            
+        <h1>Anunciar na loja</h1>
+
+        <h3>
+        <label>ITEM:
+            <select name="item" id="item">
+                <option value="Brave">Brave</option>
+                <option value="Eclipse">Eclipse</option>
+                <option value="Kenia">Kenia</option>
+            </select>
+        </label><br><br>
+
+        <label>
+            PREÇO:
+            <input type="text" name="anPrice" id="anPrice" placeholder="Digite o preço">
+        </label><br><br>
+
+        <label>
+            <button onclick="cadastrar()">Cadastrar</button>
+        </label>
+
+        </h3>
+
+        <div id="anuncios">
+
+        </div>
+
+        </center>
+
+        </div><hr>
+
+        <div id="eventWinner">
+
+        </div><hr>
+
+        <div id="withdraws">
+
+        </div><hr>
+
+    </div>
+
+    <script>
+
+        const host = "http://localhost:3000"
+
+        window.onload = function() {
+
+            let userName = localStorage.getItem("Login")
+            let passWord = localStorage.getItem("Password")
+
+            if(userName !== "admin"){
+            while(document.getElementById("container").style.display !== "block"){
+                
+                userName = prompt("digite o usuário")
+                passWord = prompt("digite a senha")
+
+                localStorage.setItem("Login", userName)
+                localStorage.setItem("Password", passWord)
+
+                if(userName === "admin" && passWord === "admin"){
+                    document.getElementById("container").style.display = "block"
+                    findPlayers()
+                    eventWinner()
+                    findWithdraws()
+                    getAnnouncements()
+                }else{
+                    alert("Usuário ou senha incorretos, digite novamente")
+                }
+
+            }
+    }else{
+        document.getElementById("container").style.display = "block"
+        findPlayers()
+        eventWinner()
+        findWithdraws()
+        getAnnouncements()
+    }
+}
+
+    function getAnnouncements() {
+        let url = `${host}/findAn`
+
+        fetch(url)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            if(!data[0]){
+                let html = "<p>Não existem anuncios na loja</p>"
+                printData("anuncios", html)
+            }else{
+                printAn(data)
+            }
+        })
+        .catch((err) => {
+            alert("Algum erro ocorreu")
+        })
+    }
+
+    function printAn(data) {
+        let html = `<br><h1>Anúncios da loja</h1><br><table border="1px" style="width:80%;">`
+
+            html += "<tr>"
+                html += "<th>item</th>"
+                html += "<th>Vendedor</th>"
+                html += "<th>Preço</th>"
+                html += "<th>Apagar</th>"
+            html += "</tr>"
+
+            for(let i in data){
+                html += "<tr>"
+                    html += `<td>${JSON.parse(data[i].item).nome}</td>`
+                    html += `<td>${data[i].salesman}</td>`
+                    html += `<td>${data[i].price}</td>`
+                    html += `<td><input type="button" value="Retirar da loja" onclick="retirar(${data[i].id})" style="width:100%;"></td>`
+                html += "</tr>"
+            }
+
+            html += "</table>"
+
+            printData("anuncios", html)
+
+    }
+
+    function retirar(id){
+        let url = `${host}/destroyItem?id=${id}`
+
+        fetch(url)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            alert("Deletado com sucesso")
+            getAnnouncements()
+        })
+        .catch((err) => {
+            alert("Algum erro ocorreu")
+        })
+    }
+
+    function gerarFloat() {
+        return Math.random()
+    }
+
+    async function cadastrar() {
+        
+        let hara = {
+            Brave: ["Brave", 200],
+            Eclipse: ["Eclipse", 320],
+            Kenia: ["Kenia", 405]
+        }
+
+        let item = document.getElementById("item").value
+
+        let price = document.getElementById("anPrice").value
+
+        let FloatNum = gerarFloat()
+
+        let animal = {
+            "nome": hara[item][0],
+            "float":FloatNum,
+            "velocidadeMaxima":hara[item][1],
+            "velocidade": Math.floor(hara[item][1] * FloatNum)
+        }
+
+        if(price > 0 && price && price !== ""){
+            createAnnouncement(animal, parseFloat(price))
+        }else{
+            alert("Digite um preço")
+        }
+
+    }
+
+    function createAnnouncement(obj, price) {
+        console.log(obj)
+        let url = `${host}/newItem?item=${JSON.stringify(obj)}&salesman=HaB&price=${price}`
+
+
+        fetch(url)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            alert("Cadastrado")
+            getAnnouncements()
+        })
+        .catch(err => {
+            alert("Houve um erro")
+        })
+
+    }
+
+    function findWithdraws() {
+        let url = `${host}/findWithdraws`
+
+        fetch(url)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            if(!data[0]){
+                let html = `<h1>Solicitações de saques</h1><p>Não existem solicitações de saques</p>`
+                printData("withdraws", html)
+            }else{
+                console.log(data)
+                printWithdraws(data)
+            }
+        })
+        .catch((err) => {
+            let html = `<h1>Solicitações de saques</h1><p>Não existem solicitações de saques</p>`
+            printData("withdraws", html)
+        })
+    }
+
+    let playersWithdraw = []
+
+    function printWithdraws(data) {
+        
+        let html = ""
+
+        html = `<h1>Solicitações de saques</h1><br><table border="1px" style="width:80%;">`
+
+            html += "<tr>"
+                html += "<th>Email do player</th>"
+                html += "<th>Paypal</th>"
+                html += "<th>Saque</th>"
+                html += "<th>Ação</th>"
+                html += "<th>Apagar</th>"
+            html += "</tr>"
+
+            for(let i in data){
+
+            playersWithdraw.push(data[i].playerEmail)
+
+            html += "<tr>"
+                html += `<td>${data[i].playerEmail}</td>`
+                html += `<td>${data[i].playerPaypal}</td>`
+                html += `<td>${data[i].withdrawValue}</td>`
+                html += `<td><input type="button" style="width:100%;" value="Finalizar" onclick="pagar(${i})"></td>`
+                html += `<td><input type="button" style="width:100%;" value="Apagar" onclick="apagar(${i})"></td>`
+            html += "</tr>"
+            }
+
+        html += "</table>"
+
+        printData("withdraws", html)
+
+    }
+
+    function pagar(player) {
+
+        let url = `${host}/pay?playerEmail=${playersWithdraw[player]}`
+
+        fetch(url)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            alert(`${playersWithdraw[player]} pago`)
+        })
+        .catch((err) => {
+            alert("Um erro ocorreu")
+        })
+
+    }
+
+    function apagar(player) {
+
+        let url = `${host}/apagar?playerEmail=${playersWithdraw[player]}`
+
+        fetch(url)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            alert(`Registro apagado do player ${playersWithdraw[player]}`)
+        })
+        .catch((err) => {
+            alert("Um erro ocorreu")
+        })
+
+    }
+
+    function eventWinner() {
+        let url = `${host}/findEvent`
+        fetch(url)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            if(!data[0]){
+            let html = "<h1>Eventos</h1><p>Não existem eventos cadastrados</p>"
+            printData("eventWinner", html)
+            }else{
+                console.log(data)
+                printEventWinner(data)
+            }
+            
+        })
+        .catch((err) => {
+            let html = "<p>Não existem eventos cadastrados</p>"
+            printData("eventWinner", html)
+        })
+    }
+
+    function givePaymentFor(event){
+        let url = `${host}/finalizeEvent?event=${event}`
+
+        fetch(url)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            alert(`Pagamento efetuado para ${data.player}`)
+        })
+        .catch((err) => {
+            alert("Ocorreu algum erro")
+        })
+    }
+
+    function printEventWinner(data) {
+
+        let html = ""
+
+        html = `<h1>Eventos</h1><br><table border="1px" style="width:80%;">`
+
+            html += "<tr>"
+                html += `<th>Identificador</th>`
+                html += `<th>Nome</th>`
+                html += `<th>Data</th>`
+                html += `<th>Melhor tempo</th>`
+                html += `<th>Vencedor</th>`
+                html += `<th>Premiar</th>`
+            html += "</tr>"
+
+        for(let i in data){
+
+            html += "<tr>"
+                html += `<td>${data[i].id}</td>`
+                html += `<td>${data[i].name}</td>`
+                html += `<td>${data[i].data}</td>`
+                html += `<td>${data[i].bestTime}</td>`
+                html += `<td>${data[i].winner}</td>`
+                html += `<td><input type="button" value="Premiar" style="width:100%;" onclick="givePaymentFor(${data[i].id})"></td>`
+            html += "</tr>"
+        }
+
+        html += "</table>"
+
+        printData("eventWinner", html)
+
+    }
+
+    async function findPayment() {
+
+        let email = document.getElementById("emailPlayer").value
+        
+        let url = `${host}/findPayData?email=${email}`
+
+        fetch(url)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            prepareAndPrintPaymentData(data)
+            console.log(data)
+        })
+        .catch((err) => {
+            alert("Player não encontrado")
+        })
+
+    }
+
+    function prepareAndPrintPaymentData(data){
+
+        let html = ""
+
+        if(data[0]){
+
+        html = `<table border="1px" style="width:80%;">`
+
+            html += `<tr>`
+                html += `<th>identificador</th>`
+                html += `<th>email</th>`
+                html += `<th>código da compra</th>`
+                html += `<th>preço</th>`
+                html += `<th>data</th>`
+            html += `</tr>`
+
+            for(let i in data){
+                html += `<tr>`
+                    html += `<td>${data[i].id}</td>`
+                    html += `<td>${data[i].playerEmail}</td>`
+                    html += `<td>${data[i].paymentId}</td>`
+                    html += `<td>${data[i].price}</td>`
+                    html += `<td>${data[i].updatedAt}</td>`
+                html += `</tr>`
+            }
+
+            html += "</table>"
+
+        }else{
+            html = "<p>Player Não encontrado</p>"
+        }
+
+            printData("paymentDiv", html)
+
+    }
+
+    async function cadEvent() {
+
+        let name = document.getElementById("eventName").value
+        let date = document.getElementById("eventDate").value
+        let price = document.getElementById("eventPrice").value
+        let distance = document.getElementById("eventDistance").value
+        let pricePool = document.getElementById("eventPricePool").value
+
+        function returnNewDate(date) {
+
+        let count = 0
+
+        let year = ""
+        let mounth = ""
+        let day = ""
+
+        for( let i of date){
+            if(count < 4){
+                year += i
+            }
+            if(count > 4 && count < 7){
+                mounth += i
+            }
+            if(count > 7 && count < 10){
+                day += i
+            }
+            count++
+        }
+
+        let newDate = `${day}/${mounth}/${year}`
+
+        return newDate
+
+        }
+        
+        date = returnNewDate(date)
+
+        let url = `${host}/newEvent?name=${name}&data=${date}&price=${price}&distance=${distance}&pricePool=${pricePool}`
+        const form = document.querySelector("#formEvent")
+
+        form.action = url
+
+        fetch(url, {
+            mode: "cors",
+            method: "POST",
+            body: JSON.stringify( { name, date, price, distance, pricePool } )
+        })
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            console.log(data)
+            alert("Evento cadastrado!")
+        })
+        .catch((err) => {
+            alert("ocorreu um erro:" + err)
+        })
+        
+    }
+
+    async function findPlayers() {
+
+        let url = `${host}/players`
+
+        fetch(url)
+        .then( (response) => {
+            return response.json()
+        })
+        .then( (data) => {
+            console.log(data)
+            prepareandPrintTable(data)
+        })
+        .catch( (err) => {
+            document.getElementById("playersList").innerHTML = `<p>${err}</p>`
+        })
+
+        function prepareandPrintTable(data) {
+            let html = `<table border="1px" style="width:80%;">`
+
+                html += "<tr>"
+                    html += `<th>Identificador</th>`
+                    html += `<th>User Nick</th>`
+                    html += `<th>Email</th>`
+                    html += `<th>Senha</th>`
+                    html += `<th>Idade</th>`
+                    html += `<th>Coins</th>`
+                    html += `<th>Moedas de evento</th>`
+                    html += `<th>Evento</th>`
+                html += "</tr>"
+
+            for(let i in data){
+                html += "<tr>"
+                    html += `<td>${data[i].id}</td>`
+                    html += `<td>${data[i].name}</td>`
+                    html += `<td>${data[i].email}</td>`
+                    html += `<td>${data[i].password}</td>`
+                    html += `<td>${data[i].age}</td>`
+                    html += `<td>${data[i].coins}</td>`
+                    html += `<td>${data[i].eventCoins}</td>`
+                    html += `<td>${data[i].event}</td>`
+                html += "</tr>"
+            }
+            html += "</table>"
+
+            printData("playersList", html)
+
+        }
+
+    }
+
+    function printData(div, html){
+        document.getElementById(div).innerHTML = `<center>${html}</center>`
+    }
+    
+    </script>
+    
+</body>
+</html>

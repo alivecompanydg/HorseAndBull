@@ -1,0 +1,5 @@
+node_modules/**/*
+backend/config/**/*
+frontend/img/**/*
+offlineModel/**/*
+simulacoes/**/*
