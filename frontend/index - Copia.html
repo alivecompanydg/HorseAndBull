@@ -9,7 +9,7 @@
 <body>
 
     <audio loop autoplay>
-        <source src="src/sounds/bensound-countryboy.mp3" type="audio/mpeg">
+        <source src="src/sounds/music_leonell_cassio_a_magical_journey_through_space.mp3" type="audio/mpeg">
     </audio>
 
     <center>
@@ -53,14 +53,18 @@
     </div>
 
     <div class="leftDiv">
-        <br><br><a href="game.html"><button class="button">JOGAR</button></a><br>
-            <br><button class="button" onclick="findEvents(), changeDisplay(document.getElementById('menu')), changeDisplay(document.getElementById('allEvents'))">EVENTOS</button><br>
-            <br><button class="button" onclick="changeDisplay(document.getElementById('menu')), changeDisplay(document.getElementById('buyCoins'))">MOEDAS</button><br>
+            <br><a href="game.html"><button class="button">JOGAR</button></a><br>
+            <button class="button" onclick="findEvents(), changeDisplay(document.getElementById('menu')), changeDisplay(document.getElementById('allEvents'))">EVENTOS</button><br>
+            <button class="button" onclick="changeDisplay(document.getElementById('menu')), changeDisplay(document.getElementById('buyCoins'))">MOEDAS</button><br>
+            <a href="loja.html"><button class="button">LOJA</button></a>
     </div>
 
     </div>
 
     <div id="allEvents" style="display: none;">
+
+        <div id="eventLeft"></div>
+        <div id="eventRight"></div>
 
     </div>
 
@@ -97,10 +101,44 @@
 
     <script>
 
+    if(!localStorage.getItem("event")){
+        localStorage.setItem("event", "FALSE")
+    }else{
+        localStorage.setItem("event", "FALSE")
+    }
+
     let playerData = ""
 
     let hara = ""
     let array = 0
+
+    let horseAnimate = 1
+
+    function passar(index) {
+        let tam = hara.horse.length - 1
+        if(index >= 0 && index <= tam){
+            setHorseData(index)
+            selectHorse(index)
+        }
+    }
+
+    function selectHorse(index){
+        let animal = JSON.stringify(hara.horse[index])
+        let email = playerData.email
+        
+        let url = `${host}/setAnimal?email=${email}&animal=${animal}`
+
+        fetch(url)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            console.log(data)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }
 
     async function setHorseData(index){
         await setDataFromPlayer("hName", `Nome: ${hara.horse[index].nome}`)
@@ -108,7 +146,33 @@
         await setDataFromPlayer("hMaxVelocity", `Velocidade Máxima: ${hara.horse[index].velocidadeMaxima}`)
         await setDataFromPlayer("hEndurence", `Resistência: ${hara.horse[index].float}`)
 
-        document.getElementById("rightDiv").innerHTML = `<center><image src="img/${hara.horse[index].nome}.png" style="width:330px; height:250px; margin-top:6px;"></center>`
+        document.getElementById("rightDiv").innerHTML = `<center><button onclick="passar(${index-1})"><</button><img src="img/${hara.horse[index].nome}1.png" onclick="animateHorse(${index})" style="width:330px; height:250px; margin-top:6px;"><button onclick="passar(${index+1})">></button></center>`
+    }
+
+    const sounds = [
+        "relincho",
+        "cavalgada"
+    ]
+
+    const soundSrc = [
+        "src/sounds/HORSE.wav",
+        "src/sounds/HORSEGAL.wav"
+    ]
+
+    function animateHorse(index) {
+
+        mattress.playSound("relincho", sounds, soundSrc[0])
+        
+        let INTER = setInterval(() => {
+            document.getElementById("rightDiv").innerHTML = `<center><button onclick="passar(${index-1})"><</button><img src="img/${hara.horse[index].nome}${horseAnimate}.png" onclick="animateHorse(${index})" style="width:330px; height:250px; margin-top:6px;"><button onclick="passar(${index+1})">></button></center>`
+            if(horseAnimate === 4){
+                horseAnimate = 1
+                document.getElementById("rightDiv").innerHTML = `<center><button onclick="passar(${index-1})"><</button><image src="img/${hara.horse[index].nome}${horseAnimate}.png" onclick="animateHorse(${index})" style="width:330px; height:250px; margin-top:6px;"><button onclick="passar(${index+1})">></button></center>`
+                clearInterval(INTER)
+            }else{
+                horseAnimate++
+            }
+        }, 150)
     }
 
     function withdraw() {
@@ -150,6 +214,11 @@
 
     async function initGame(data) {
         playerData = await data[0]
+        if(playerData.event && playerData.event !== ""){
+            playerEVENT = await playerData.event
+        }else{
+            playerEVENT = ""
+        }
         hara = await JSON.parse(data[0].animals)
         console.table(hara)
         await setDataFromPlayer("namePlayer", playerData.name)
