@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horse and Bull - Vaquejada</title>
+</head>
+<body>
+    
+    <script src="src/scripts/mattress.js"></script>
+    <script src="src/scripts/script.js"></script>
+
+    <script>
+
+    const mattress = new Mattress()
+
+    let event = ""
+
+    let playerData = ""
+    let horse = ""
+    let horseVelocity = 0
+
+    async function initGame(data) {
+        playerData = await data[0]
+        horse = await JSON.parse(playerData.principalAnimal)
+        horseVelocity = horse.velocidade
+    }
+
+    </script>
+
+</body>
+</html>

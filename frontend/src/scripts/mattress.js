@@ -19,12 +19,18 @@ class Mattress{
         return `${Math.sqrt(window.innerWidth, window.innerHeight)}${this.singleIdentifier.toFixed(2)}`
     }
 
-    createCanvas() {
+    createCanvas(width, height) {
+
+        if(!width || !height){
+            width = 600
+            height = 600
+        }
+        
         this.cnv = document.createElement("canvas")
-        this.cnv.style.width = "600px"
-        this.cnv.width = 600
-        this.cnv.style.height = "600px"
-        this.cnv.height = 600
+        this.cnv.style.width = `${width}px`
+        this.cnv.width = width
+        this.cnv.style.height = `${height}px`
+        this.cnv.height = height
         document.querySelector("body").appendChild(this.cnv)
         this.ctx = this.cnv.getContext("2d")
         return this.ctx
