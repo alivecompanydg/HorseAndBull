@@ -165,7 +165,7 @@
         
         let INTER = setInterval(() => {
             document.getElementById("rightDiv").innerHTML = `<center><button onclick="passar(${index-1})"><</button><img src="img/${hara.horse[index].nome}${horseAnimate}.png" onclick="animateHorse(${index})" style="width:330px; height:250px; margin-top:6px;"><button onclick="passar(${index+1})">></button></center>`
-            if(horseAnimate === 4){
+            if(horseAnimate === 5){
                 horseAnimate = 1
                 document.getElementById("rightDiv").innerHTML = `<center><button onclick="passar(${index-1})"><</button><image src="img/${hara.horse[index].nome}${horseAnimate}.png" onclick="animateHorse(${index})" style="width:330px; height:250px; margin-top:6px;"><button onclick="passar(${index+1})">></button></center>`
                 clearInterval(INTER)
