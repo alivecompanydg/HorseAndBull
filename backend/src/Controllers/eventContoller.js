@@ -106,7 +106,9 @@ module.exports = {
         const {event} = req.query
 
         let eventList = await Event.findAll({
-            id:event
+            where: {
+                id:event
+            }
         })
 
         const datas = {
@@ -117,14 +119,16 @@ module.exports = {
         let winner = eventList[0].winner
 
         let playerWinner = await Player.findAll({
-            email: eventList[0].winner
+            where: {
+                email: eventList[0].winner
+            }
         })
 
         playerWinner = await Player.update({
             eventCoins: parseInt(playerWinner[0].eventCoins) + parseInt(eventList[0].pricePool)
         }, {
             where: {
-                email: eventList[0].winner
+                email: winner
             }
         })
 
