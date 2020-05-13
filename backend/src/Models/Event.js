@@ -35,6 +35,6 @@ const Event = db.sequelize.define( "events", {
     }
 } )
 
-Event.sync( { force: true } )
+//Event.sync( { force: true } )
 
 module.exports = Event

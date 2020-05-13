@@ -53,7 +53,7 @@
     </div>
 
     <div class="leftDiv">
-            <br><a href="game.html"><button class="button">JOGAR</button></a><br>
+    <br><button class="button" onclick="selectMode()">TREINAR</button><br>
             <button class="button" onclick="findEvents(), changeDisplay(document.getElementById('menu')), changeDisplay(document.getElementById('allEvents'))">EVENTOS</button><br>
             <button class="button" onclick="changeDisplay(document.getElementById('menu')), changeDisplay(document.getElementById('buyCoins'))">MOEDAS</button><br>
             <a href="loja.html"><button class="button">LOJA</button></a>
@@ -97,6 +97,17 @@
             </div>
 
         </form>
+
+    </div>
+
+    <div id="_selectMode" style="position:absolute; display: none; width:98%; height:50%; margin-top: 60px; background-color: rgb(142, 204, 235);">
+        <center>
+
+            <a href="game.html"><button class="button">CORRIDA</button></a>
+            <a href="vqjd.html"><button class="button">VAQUEJADA</button></a>
+            <a href="index.html"><button class="button">VOLTAR AO MENU</button></a>
+
+        </center>
     </div>
 
     <script>
@@ -159,13 +170,19 @@
         "src/sounds/HORSEGAL.wav"
     ]
 
+    async function selectMode() {
+        await changeDisplay(document.getElementById("menu"))
+        await changeDisplay(document.getElementById("_selectMode"))
+        document.querySelector("body").style.backgroundColor = "rgb(142,204,235)"
+    }
+
     function animateHorse(index) {
 
         mattress.playSound("relincho", sounds, soundSrc[0])
         
         let INTER = setInterval(() => {
             document.getElementById("rightDiv").innerHTML = `<center><button onclick="passar(${index-1})"><</button><img src="img/${hara.horse[index].nome}${horseAnimate}.png" onclick="animateHorse(${index})" style="width:330px; height:250px; margin-top:6px;"><button onclick="passar(${index+1})">></button></center>`
-            if(horseAnimate === 4){
+            if(horseAnimate === 5){
                 horseAnimate = 1
                 document.getElementById("rightDiv").innerHTML = `<center><button onclick="passar(${index-1})"><</button><image src="img/${hara.horse[index].nome}${horseAnimate}.png" onclick="animateHorse(${index})" style="width:330px; height:250px; margin-top:6px;"><button onclick="passar(${index+1})">></button></center>`
                 clearInterval(INTER)
