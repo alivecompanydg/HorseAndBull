@@ -1,5 +1,4 @@
 node_modules/**/*
-backend/config/**/*
 frontend/img/**/*
-offlineModel/**/*
+backend/config/**/*
 simulacoes/**/*

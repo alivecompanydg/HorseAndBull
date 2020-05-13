@@ -53,7 +53,7 @@
     </div>
 
     <div class="leftDiv">
-            <br><a href="game.html"><button class="button">JOGAR</button></a><br>
+    <br><button class="button" onclick="selectMode()">TREINAR</button><br>
             <button class="button" onclick="findEvents(), changeDisplay(document.getElementById('menu')), changeDisplay(document.getElementById('allEvents'))">EVENTOS</button><br>
             <button class="button" onclick="changeDisplay(document.getElementById('menu')), changeDisplay(document.getElementById('buyCoins'))">MOEDAS</button><br>
             <a href="loja.html"><button class="button">LOJA</button></a>
@@ -97,6 +97,17 @@
             </div>
 
         </form>
+
+    </div>
+
+    <div id="_selectMode" style="position:absolute; display: none; width:98%; height:50%; margin-top: 60px; background-color: rgb(142, 204, 235);">
+        <center>
+
+            <a href="game.html"><button class="button">CORRIDA</button></a>
+            <a href="vqjd.html"><button class="button">VAQUEJADA</button></a>
+            <a href="index.html"><button class="button">VOLTAR AO MENU</button></a>
+
+        </center>
     </div>
 
     <script>
@@ -158,6 +169,12 @@
         "src/sounds/HORSE.wav",
         "src/sounds/HORSEGAL.wav"
     ]
+
+    async function selectMode() {
+        await changeDisplay(document.getElementById("menu"))
+        await changeDisplay(document.getElementById("_selectMode"))
+        document.querySelector("body").style.backgroundColor = "rgb(142,204,235)"
+    }
 
     function animateHorse(index) {
 

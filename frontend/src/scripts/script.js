@@ -82,6 +82,7 @@ function payEvent(index) {
     let email = playerData.email
     let event = {
         name: arrayEventDatas[index].name,
+        modal: arrayEventDatas[index].modal,
         distance: arrayEventDatas[index].distance
     }
 
@@ -108,7 +109,17 @@ function payEvent(index) {
 
 async function playevent() {
     await localStorage.setItem("event", "TRUE")
-    window.location.href = "game.html"
+    const eventType = JSON.parse(playerData.event).modal
+
+    switch(eventType){
+        case "Corrida":
+            window.location.href = "game.html"
+        break
+
+        case "Vaquejada":
+            alert("Vaquejada")
+        break
+    }
 }
 
 let playerEVENT = ""
@@ -128,6 +139,7 @@ function printEvents(data) {
             html += `<th>Data</th>`
             html += `<th>Preço</th>`
             html += `<th>Distância</th>`
+            html += `<th>Modalidade</th>`
             html += `<th>Recompensa</th>`
             html += `<th>Comprar</th>`
         html += "</tr>"
@@ -136,6 +148,7 @@ function printEvents(data) {
 
         let THISEVENT = {
             name:data[i].name,
+            modal:data[i].modal,
             distance:data[i].distance
         }
 
@@ -153,6 +166,7 @@ function printEvents(data) {
             html += `<td>${data[i].data}</td>`
             html += `<td>${data[i].price}</td>`
             html += `<td>${data[i].distance}</td>`
+            html += `<td>${data[i].modal}</td>`
             html += `<td>${data[i].pricePool}</td>`
             if(THISEVENT.name !== EVENT.name){
                 html += `<td><button style="width:100%;" onclick="payEvent(${i})">Inscrever-se</button></td>`

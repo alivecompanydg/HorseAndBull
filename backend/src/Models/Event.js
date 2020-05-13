@@ -18,6 +18,10 @@ const Event = db.sequelize.define( "events", {
         type: db.Sequelize.FLOAT
     },
 
+    modal: {
+        type: db.Sequelize.STRING
+    },
+
     winner: {
         type: db.Sequelize.STRING
     },
@@ -31,6 +35,6 @@ const Event = db.sequelize.define( "events", {
     }
 } )
 
-//Event.sync( { force: true } )
+Event.sync( { force: true } )
 
 module.exports = Event

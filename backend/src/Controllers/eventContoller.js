@@ -6,12 +6,13 @@ module.exports = {
 
     async Store(req, res) {
 
-        const { name, data, price, distance, pricePool } = req.query
+        const { name, data, price, distance, pricePool, modal } = req.query
 
         let event = await Event.create({
             name,
             data,
             price,
+            modal,
             distance,
             pricePool
         })
@@ -113,6 +114,7 @@ module.exports = {
 
         const datas = {
             "name": eventList[0].name,
+            "modal": eventList[0].modal,
             "distance": eventList[0].distance
         }
 

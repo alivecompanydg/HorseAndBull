@@ -31,6 +31,12 @@
             <p>Nome: <input type="text" id="eventName"></p>
             <p>Data: <input type="date" id="eventDate"></p>
             <p>Preço: <input type="text" id="eventPrice"></p>
+            <p>Modalidade
+                <select name="modal" id="modal">
+                    <option value="Corrida">Corrida</option>
+                    <option value="Vaquejada">Vaquejada</option>
+                </select>
+            </p>
             <p>Premio: <input type="text" id="eventPricePool"></p>
             <p>Distância: <input type="text" style="width:200px;" placeholder="digite a distância em metros" id="eventDistance"></p>
             <input type="button" value="Cadastrar novo evento" onclick="cadEvent()">
@@ -386,6 +392,7 @@
                 html += `<th>Nome</th>`
                 html += `<th>Data</th>`
                 html += `<th>Melhor tempo</th>`
+                html += `<th>Modalidade</th>`
                 html += `<th>Vencedor</th>`
                 html += `<th>Premiar</th>`
             html += "</tr>"
@@ -397,6 +404,7 @@
                 html += `<td>${data[i].name}</td>`
                 html += `<td>${data[i].data}</td>`
                 html += `<td>${data[i].bestTime}</td>`
+                html += `<td>${data[i].modal}</td>`
                 html += `<td>${data[i].winner}</td>`
                 html += `<td><input type="button" value="Premiar" style="width:100%;" onclick="givePaymentFor(${data[i].id})"></td>`
             html += "</tr>"
@@ -471,6 +479,7 @@
         let price = document.getElementById("eventPrice").value
         let distance = document.getElementById("eventDistance").value
         let pricePool = document.getElementById("eventPricePool").value
+        let modal = document.getElementById("modal").value
 
         function returnNewDate(date) {
 
@@ -501,7 +510,7 @@
         
         date = returnNewDate(date)
 
-        let url = `${host}/newEvent?name=${name}&data=${date}&price=${price}&distance=${distance}&pricePool=${pricePool}`
+        let url = `${host}/newEvent?name=${name}&data=${date}&price=${price}&distance=${distance}&pricePool=${pricePool}&modal=${modal}`
         const form = document.querySelector("#formEvent")
 
         form.action = url
