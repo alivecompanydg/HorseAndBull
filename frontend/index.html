@@ -13,6 +13,9 @@
     </audio>
 
     <center>
+
+    <script src="https://lig-membres.imag.fr/donsez/cours/exemplescourstechnoweb/js_securehash/sha1.js"></script>
+    
     <script src="src/scripts/mattress.js"></script>
 
     <script src="src/scripts/script.js"></script>
@@ -103,14 +106,33 @@
     <div id="_selectMode" style="position:absolute; display: none; width:98%; height:50%; margin-top: 60px; background-color: rgb(142, 204, 235);">
         <center>
 
-            <a href="game.html"><button class="button">CORRIDA</button></a>
-            <a href="vqjd.html"><button class="button">VAQUEJADA</button></a>
-            <a href="index.html"><button class="button">VOLTAR AO MENU</button></a>
+            <div id="mode">
+                <a href="game.html"><button class="button">CORRIDA</button></a>
+                <button class="button" onclick="changeDisplay(document.getElementById('mode'), changeDisplay(document.getElementById('gameStyle')))">VAQUEJADA</button>
+                <a href="index.html"><button class="button">VOLTAR AO MENU</button></a>
+            </div>
+
+            <div id="gameStyle" style="display: none;">
+                <button class="button" onclick="selectedMode('ESTEIRA')">ESTEIRA</button>
+                <button class="button" onclick="selectedMode('PUXADOR')">PUXADOR</button>
+                <a href="index.html"><button class="button">VOLTAR AO MENU</button></a>
+            </div>
 
         </center>
     </div>
 
     <script>
+
+    if(!localStorage.getItem("selectedMode")){
+        localStorage.setItem("selectedMode", "NO")
+    }else{
+        localStorage.setItem("selectedMode", "NO")
+    }
+
+    async function selectedMode(mode) {
+        await localStorage.setItem("selectedMode", mode)
+        window.location.href = "vqjd.html"
+    }
 
     if(!localStorage.getItem("event")){
         localStorage.setItem("event", "FALSE")

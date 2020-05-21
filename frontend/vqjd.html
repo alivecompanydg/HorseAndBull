@@ -12,18 +12,99 @@
 
     <script>
 
-    const mattress = new Mattress()
-
     let event = ""
 
     let playerData = ""
     let horse = ""
     let horseVelocity = 0
+    let selectedMode = ""
+
+    const ctx = mattress.createCanvas()
+    mattress.fullScrean()
+    mattress.center()
+
+    const sounds = [
+        "relincho",
+        "cavalgada"
+    ]
+
+    const soundSrc = [
+        "src/sounds/HORSE.wav",
+        "src/sounds/HORSEGAL.wav"
+    ]
+
+    const imgs = {
+        sky: new Image(),
+        trees: new Image(),
+        ground: new Image(),
+        point: new Image(),
+        player: new Image(),
+        horse: new Image()
+    }
+
+    const ground = {
+        x2: mattress.cnv.width,
+        x: 0,
+        y: 0,
+        width: mattress.cnv.width,
+        height: mattress.cnv.height,
+        srcX: 0,
+        srcY: 0,
+        srcWidth: 1920,
+        srcHeight: 1080,
+        velocity:4.5,
+
+        draw: function() {
+            ctx.drawImage(imgs.ground, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x, this.y, this.width, this.height)
+            ctx.drawImage(imgs.ground, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x2, this.y, this.width, this.height)
+        },
+
+        update: function() {
+            this.x -= this.velocity
+            if(this.x + this.width <= 0) {
+                if(this.x !== this.x2 + this.width){
+                    this.x = this.x2 + this.width - 5
+                }else{
+                    this.x = this.x2 + this.width - 5
+                }
+            }
+
+            this.x2 -= this.velocity
+            if(this.x2 + this.width <= 0) {
+                if(this.x2 !== this.x + this.width){
+                    this.x2 = this.x + this.width - 5
+                }else{
+                    this.x2 = this.x + this.width - 5
+                }
+            }
+        }
+    }
 
     async function initGame(data) {
         playerData = await data[0]
         horse = await JSON.parse(playerData.principalAnimal)
         horseVelocity = horse.velocidade
+        selectedMode = await localStorage.getItem("selectedMode")
+        imgs.sky.src = "img/sky.png"
+        imgs.ground.src = "img/ground.png"
+        init()
+    }
+
+    function init() {
+        requestAnimationFrame(init, mattress.cnv)
+        mattress.fullScrean()
+        update()
+        draw()
+    }
+
+    function draw() {
+        mattress.clear()
+        mattress.drawBackground(imgs.sky)
+        ground.draw()
+    }
+
+    function update() {
+        ground.update()
     }
 
     </script>

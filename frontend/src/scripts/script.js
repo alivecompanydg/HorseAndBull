@@ -40,7 +40,7 @@ async function cadPlayer() {
 
     let name = document.getElementById("name").value
     let email = document.getElementById("email").value
-    let password = document.getElementById("senha").value
+    let password = calcSHA1(document.getElementById("senha").value)
     let age = document.getElementById("idade").value
     let ip = mattress.singleId()
 
