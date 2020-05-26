@@ -97,7 +97,7 @@
         
         const roomsLength = state.rooms.length - 1
 
-        if(state.rooms[roomsLength].players.length <= 2) {
+        if(state.rooms[roomsLength].players.length < 2) {
             state.rooms[roomsLength].players.push({
             name: playerData.name,
             mode: selectedMode,
@@ -111,6 +111,13 @@
                     players:[]
                 }
             )
+            state.rooms[roomsLength].players.push({
+            name: playerData.name,
+            mode: selectedMode,
+            horse: horse,
+            horseVelocity,
+            principalAnimal: horse.nome
+        })
         }
         init()
     }
