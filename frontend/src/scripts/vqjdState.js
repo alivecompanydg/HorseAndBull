@@ -1,18 +1,10 @@
 
-let event = ""
-
-let playerData = ""
-let horse = ""
-let horseVelocity = 0
-let selectedMode = ""
-
-let roomNumber = 0
-
-const state = {
-    rooms:[]
-}
 
 function createGame() {
+
+    const state = {
+        rooms:[]
+    }
 
     let number = 0
     
@@ -54,9 +46,8 @@ function createGame() {
     return {
         addPlayer,
         number,
+        state,
         addRoom
     }
 
 }
-
-let game = ""

@@ -18,6 +18,17 @@
     mattress.fullScrean()
     mattress.center()
 
+    let event = ""
+
+    let playerData = ""
+    let horse = ""
+    let horseVelocity = 0
+    let selectedMode = ""
+
+    let roomNumber = 0
+
+    let game = ""
+
     const sounds = [
         "relincho",
         "cavalgada"
@@ -30,49 +41,43 @@
 
     const imgs = {
         sky: new Image(),
-        trees: new Image(),
-        ground: new Image(),
+        scene: new Image(),
         point: new Image(),
         player: new Image(),
         horse: new Image()
     }
 
-    const ground = {
-        x2: mattress.cnv.width,
+    const STATE = {
+        ready: 1,
+        steady: 2,
+        run:3
+    }
+
+    let thisState = STATE.ready
+
+    const scene = {
         x: 0,
         y: 0,
-        width: mattress.cnv.width,
+        width: 5520,
         height: mattress.cnv.height,
         srcX: 0,
         srcY: 0,
-        srcWidth: 1920,
+        srcWidth: 11520,
         srcHeight: 1080,
         velocity:4.5,
 
-        draw: function() {
-            ctx.drawImage(imgs.ground, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x, this.y, this.width, this.height)
-            ctx.drawImage(imgs.ground, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x2, this.y, this.width, this.height)
+        draw() {
+            ctx.drawImage(imgs.scene, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x, this.y, this.width, this.height)
         },
 
-        update: function() {
-            this.x -= this.velocity
-            if(this.x + this.width <= 0) {
-                if(this.x !== this.x2 + this.width){
-                    this.x = this.x2 + this.width - 5
-                }else{
-                    this.x = this.x2 + this.width - 5
-                }
-            }
-
-            this.x2 -= this.velocity
-            if(this.x2 + this.width <= 0) {
-                if(this.x2 !== this.x + this.width){
-                    this.x2 = this.x + this.width - 5
-                }else{
-                    this.x2 = this.x + this.width - 5
+        update() {
+            if(thisState === STATE.run){
+                if(this.x >= -this.width+800){
+                    this.x -= this.velocity
                 }
             }
         }
+
     }
 
     async function initGame(data) {
@@ -81,7 +86,7 @@
         horseVelocity = horse.velocidade
         selectedMode = await localStorage.getItem("selectedMode")
         imgs.sky.src = "img/sky.png"
-        imgs.ground.src = "img/ground.png"
+        imgs.scene.src = "img/vqjdScene.png"
         imgs.player.src = `img/${horse.nome}Sprite.png`
         game = createGame()
         init()
@@ -97,11 +102,11 @@
     function draw() {
         mattress.clear()
         mattress.drawBackground(imgs.sky)
-        ground.draw()
+        scene.draw()
     }
 
     function update() {
-        ground.update()
+        scene.update()
     }
 
     </script>
