@@ -51,3 +51,9 @@ function createGame() {
     }
 
 }
+
+try{
+    module.exports = createGame
+}catch(err) {
+    console.log("Conectado com o server NodeJs")
+}
