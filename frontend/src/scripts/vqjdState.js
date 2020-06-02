@@ -27,6 +27,10 @@ function createGame() {
         }
     }
 
+    function removePlayer({ playerId }){
+        delete state.rooms[number].players[playerId]
+    }
+
     function addRoom(roomIndex) {
 
         number = roomIndex
@@ -45,6 +49,7 @@ function createGame() {
 
     return {
         addPlayer,
+        removePlayer,
         number,
         state,
         addRoom
