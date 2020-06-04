@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horse and Bull - Vaquejada</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    
+    <script src="src/scripts/mattress.js"></script>
+    <script src="src/scripts/script.js"></script>
+
+    <script src="src/scripts/vqjdState.js"></script>
+
+    <script>
+
+    const ctx = mattress.createCanvas()
+    mattress.fullScrean()
+    mattress.center()
+
+    let event = ""
+
+    let playerData = ""
+    let horse = ""
+    let horseVelocity = 0
+    let selectedMode = ""
+
+    let game = ""
+
+    const sounds = [
+        "relincho",
+        "cavalgada"
+    ]
+
+    const soundSrc = [
+        "src/sounds/HORSE.wav",
+        "src/sounds/HORSEGAL.wav"
+    ]
+
+    const imgs = {
+        sky: new Image(),
+        scene: new Image(),
+        point: new Image(),
+        player: new Image(),
+        horse: new Image()
+    }
+
+    const STATE = {
+        ready: 1,
+        steady: 2,
+        run:3
+    }
+
+    let thisState = STATE.ready
+
+    const scene = {
+        x: 0,
+        y: 0,
+        width: 5520,
+        height: mattress.cnv.height,
+        srcX: 0,
+        srcY: 0,
+        srcWidth: 11520,
+        srcHeight: 1080,
+        velocity:4.5,
+
+        draw() {
+            ctx.drawImage(imgs.scene, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x, this.y, this.width, this.height)
+        },
+
+        update() {
+            if(thisState === STATE.run){
+                if(this.x >= -this.width+800){
+                    this.x -= this.velocity
+                }
+            }
+        }
+
+    }
+
+    async function initGame(data) {
+        playerData = await data[0]
+        horse = await JSON.parse(playerData.principalAnimal)
+        horseVelocity = horse.velocidade
+        selectedMode = await localStorage.getItem("selectedMode")
+        imgs.sky.src = "img/sky.png"
+        imgs.scene.src = "img/vqjdScene.png"
+        imgs.player.src = `img/${horse.nome}Sprite.png`
+        game = createGame()
+        init()
+    }
+
+    function init() {
+        requestAnimationFrame(init, mattress.cnv)
+        mattress.fullScrean()
+        update()
+        draw()
+    }
+
+    function draw() {
+        mattress.clear()
+        mattress.drawBackground(imgs.sky)
+        scene.draw()
+    }
+
+    function update() {
+        scene.update()
+    }
+
+    const socket = io()
+
+    </script>
+
+</body>
+</html>

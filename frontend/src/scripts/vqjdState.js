@@ -1,56 +1,32 @@
 
-
 function createGame() {
 
     const state = {
-        rooms:[]
+        awaitRoom:[]
     }
 
     let number = 0
     
-    function addPlayer(playerData) {
-
-        const playerName = playerData.name
-
-        const player = {
-            playerId: playerData.name,
-            horse:horse,
-            horseVelocity,
-            selectedMode
-        }
-
-        if(state.rooms[number].players.length === 2){
-            addRoom(roomNumber)
-            state.rooms[roomNumber-1].players.push(player)
-        }else{
-            state.rooms[number].players.push(player)
-        }
+    function addPlayer(command) {
+        state.awaitRoom.push({
+            playerId:command.playerId,
+            playerData:command.playerData
+        })
     }
 
-    function removePlayer({ playerId }){
-        delete state.rooms[number].players[playerId]
+    function removePlayer(command){
+        delete state.awaitRoom[number].players[command.playerId]
     }
 
-    function addRoom(roomIndex) {
+    function addRoom() {}
 
-        number = roomIndex
-
-        state.rooms[roomIndex] = {
-            players:[]
-        }
-
-        roomNumber++
-    }
-
-    if(!state.rooms.length){
-        addRoom(roomNumber)
-        addPlayer(playerData)
+    if(!state.awaitRooms.length){
+        addPlayer({playerData:playerData, playerId:playerId})
     }
 
     return {
         addPlayer,
         removePlayer,
-        number,
         state,
         addRoom
     }
