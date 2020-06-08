@@ -116,6 +116,7 @@
         imgs.scene.src = "img/vqjdScene.png"
         imgs.player.src = `img/${horse.nome}_vaquejada.png`
         game = createGame()
+        server()
         init()
     }
 
@@ -138,17 +139,25 @@
         player.update()
     }
 
-    const socket = io()
+    function server() {
 
-    socket.on("connect", () => {
-        const playerId = socket.id
-        console.log(`Player connected on server with as ${playerId}`)
+        const socket = io()
 
-        socket.on("setup", (state) => {
-            game.setState(state)
+        socket.on("connect", () => {
+            const playerId = socket.id
+            console.log(`Player connected on server with as ${playerId}`)
+
+            socket.on("setup", (state) => {
+                game.setState(state)
+            })
+
+            socket.on("add-player", (command) => {
+                game.addPlayer(command)
+            })
+
         })
 
-    })
+    }
 
     </script>
 

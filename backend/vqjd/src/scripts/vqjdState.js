@@ -7,7 +7,8 @@ function createGame() {
 
     const stateOBS = {
         observers: [],
-        playerId: null
+        playerId: null,
+        room: null
     }
 
     function registerPlayerId(playerId) {
@@ -19,9 +20,9 @@ function createGame() {
     }
 
     function notifyAll(command) {
-        console.log(`Notifying ${state.observers.length} observers`)
+        console.log(`Notifying ${stateOBS.observers.length} observers`)
 
-        for(const observerFunction of state.observers) {
+        for(const observerFunction of stateOBS.observers) {
             observerFunction(command)
         }
 
@@ -34,6 +35,7 @@ function createGame() {
             state.rooms[room][playerId] = {
                 playerId
             }
+            stateOBS.room = room
         }else{
             const roomNum = state.rooms.length -1
             if(state.rooms[roomNum].length == 2){
@@ -41,12 +43,19 @@ function createGame() {
                 state.rooms[room][playerId] = {
                     playerId
                 }
+                stateOBS.room = room
             }else{
                 state.rooms[roomNum][playerId] = {
                     playerId
                 }
+                //stateOBS.room = roomNum
             }
         }
+
+        notifyAll({
+            type:"add-player",
+            playerId
+        })
         
     }
 
@@ -76,6 +85,7 @@ function createGame() {
         subscribe,
         registerPlayerId,
         state,
+        stateOBS,
         addRoom
     }
 

@@ -10,8 +10,6 @@ const routes = require("./routes")
 
 app.use(express.static("vqjd"))
 
-const game = createGame()
-
 app.use(function(req, res, next) { res.header("Access-Control-Allow-Origin", "*"); res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept"); next(); });
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -20,6 +18,12 @@ app.use(routes)
 
 const server = http.createServer(app)
 const sockets = socketio(server)
+
+const game = createGame()
+
+game.subscribe((command) => {
+    sockets.emit(command.type, command)
+})
 
 sockets.on("connection", (socket) => {
     const playerId = socket.id
