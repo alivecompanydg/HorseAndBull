@@ -142,7 +142,7 @@ module.exports = {
             }
         })
 
-        Event.destroy({
+        await Event.destroy({
             where: {
                 id:event
             }

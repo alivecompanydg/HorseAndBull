@@ -31,24 +31,16 @@ function createGame() {
     function addPlayer(command) {
         const playerId = command.playerId
         if(!state.rooms[0]){
+            console.log("metodo 1")
             const room = addRoom()
             state.rooms[room][playerId] = {
                 playerId
             }
             stateOBS.room = room
         }else{
-            const roomNum = state.rooms.length -1
-            if(state.rooms[roomNum].length == 2){
-                const room = addRoom()
-                state.rooms[room][playerId] = {
-                    playerId
-                }
-                stateOBS.room = room
-            }else{
-                state.rooms[roomNum][playerId] = {
-                    playerId
-                }
-                //stateOBS.room = roomNum
+            const room = state.rooms.length
+            state.rooms[room-1][playerId] = {
+                playerId
             }
         }
 

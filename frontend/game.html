@@ -114,9 +114,9 @@
         draw() {
             ctx.fillStyle = "red"
             ctx.fillRect(this.rectX, this.rectY - 120, 50, 120)
-            ctx.fillRect(this.rectX, this.rectY + Math.floor(horseVelocity/this.dividedBy), 50, 120)
+            ctx.fillRect(this.rectX, this.rectY + 25+Math.pow(5*Math.pow(10,-horse.float),3), 50, 120)
             ctx.fillStyle = "green"
-            ctx.fillRect(this.rectX, this.rectY, 50, Math.floor(horseVelocity/this.dividedBy))
+            ctx.fillRect(this.rectX, this.rectY, 50, 25+Math.pow(5*Math.pow(10,-horse.float),3))
             ctx.drawImage(imgs.point, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x, this.y, this.width, this.height)
         },
 
@@ -134,7 +134,7 @@
             if(this.y + this.width/2 <= this.rectY - 120){
                 this.decrement = -this.decrement
             }
-            else if(this.y + this.width/2 >= this.rectY + Math.floor(horseVelocity/this.dividedBy) + 120) {
+            else if(this.y + this.width/2 >= this.rectY + 25+Math.pow(5*Math.pow(10,-horse.float),3) + 120) {
                 this.decrement = -this.decrement
             }
 
@@ -412,7 +412,7 @@
             mattress.cnv.onclick = function() {
                 statesUpdates.updateDistance()
                 if(buttonEvent.visible){
-                    if(buttonEvent.y + buttonEvent.height/2 >= buttonEvent.rectY && buttonEvent.y + buttonEvent.height/2 <= buttonEvent.rectY + Math.floor(horseVelocity/buttonEvent.dividedBy)){
+                    if(buttonEvent.y + buttonEvent.height/2 >= buttonEvent.rectY && buttonEvent.y + buttonEvent.height/2 <= buttonEvent.rectY + 25+Math.pow(5*Math.pow(10,-horse.float),3)){
                         statesUpdates.horseDistance += Math.floor(horseVelocity * 2.6)
                         boost++
                         mattress.playSound("relincho", sounds, soundSrc[0])
