@@ -1,4 +1,6 @@
 
+let _playerData = ""
+
 function createGame() {
 
     const state = {
@@ -30,7 +32,7 @@ function createGame() {
     
     function addPlayer(command) {
         const playerId = command.playerId
-        if(!state.rooms[0]){
+        if(!state.rooms[0] || Object.keys(state.rooms[state.rooms.length-1]).length === 2){
             console.log("metodo 1")
             const room = addRoom()
             state.rooms[room][playerId] = {
@@ -38,7 +40,9 @@ function createGame() {
             }
             stateOBS.room = room
         }else{
+            console.log("Metodo 2")
             const room = state.rooms.length
+            console.log(Object.keys(state.rooms[room-1]).length)
             state.rooms[room-1][playerId] = {
                 playerId
             }
@@ -52,11 +56,16 @@ function createGame() {
     }
 
     function removePlayer(command){
+        const playerId = command.playerId
         for(const room in state.rooms){
-            if(state.rooms[room][command.playerId]){
-                delete state.rooms[room][command.playerId]
+            if(state.rooms[room][playerId]){
+                delete state.rooms[room][playerId]
             }
         }
+        notifyAll({
+            type:"remove-player",
+            playerId
+        })
     }
 
     function setState(newState) {

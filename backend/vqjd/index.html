@@ -109,6 +109,7 @@
 
     async function initGame(data) {
         playerData = await data[0]
+        _playerData = data[0]
         horse = await JSON.parse(playerData.principalAnimal)
         horseVelocity = horse.velocidade
         selectedMode = await localStorage.getItem("selectedMode")
@@ -153,6 +154,10 @@
 
             socket.on("add-player", (command) => {
                 game.addPlayer(command)
+            })
+
+            socket.on("remove-player", (command) => {
+                game.removePlayer(command)
             })
 
         })
