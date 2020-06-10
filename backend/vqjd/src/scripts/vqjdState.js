@@ -29,9 +29,25 @@ function createGame() {
         }
 
     }
+
+    function destroyAloneRoom(room){
+        state.rooms.splice(room, 1)
+    }
+
+    function analyseForDestroyAloneRooms() {
+        for(let room = 0; room < state.rooms.length; room++){
+            const Room = state.rooms[room]
+            if(Object.keys(Room).length === 0){
+                console.log(`Sala ${room} esta vazia`)
+                destroyAloneRoom(room)
+            }
+        }
+        //notifyAll({})
+    }
     
     function addPlayer(command) {
         const playerId = command.playerId
+        stateOBS.playerId = playerId
         if(!state.rooms[0] || Object.keys(state.rooms[state.rooms.length-1]).length === 2){
             console.log("metodo 1")
             const room = addRoom()
@@ -66,6 +82,9 @@ function createGame() {
             type:"remove-player",
             playerId
         })
+        notifyAll({
+            type:"delete-room"
+        })
     }
 
     function setState(newState) {
@@ -85,6 +104,8 @@ function createGame() {
         notifyAll,
         subscribe,
         registerPlayerId,
+        analyseForDestroyAloneRooms,
+        destroyAloneRoom,
         state,
         stateOBS,
         addRoom

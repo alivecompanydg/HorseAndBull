@@ -47,12 +47,13 @@
     }
 
     const STATE = {
-        ready: 1,
-        steady: 2,
-        run:3
+        awaitTwoPlayers:1,
+        ready: 2,
+        steady: 3,
+        run:4
     }
 
-    let thisState = STATE.ready
+    let thisState = STATE.awaitTwoPlayers
 
     const scene = {
         x: 0,
@@ -103,9 +104,56 @@
                 this.timer = 0
             }
 
+            if(thisState === STATE.run){
+                imgs.player.src = `img/${horse.nome}_vaquejada.png`
+            }
+
             this.srcX = Math.floor(this.timer / this.velocity) * this.srcWidth
         }
     }
+
+    function state_Update() {
+
+        const room = {}
+
+        function seeState(rooms) {
+            console.log("chamou")
+            if(Object.keys(rooms[room.thisRoom]).length === 2){
+                thisState = STATE.ready
+                console.log("Existem dois players")
+            }else{
+                console.log("Existe um player")
+                thisState = STATE.awaitTwoPlayers
+            }
+        }
+
+        function findMyRoom(rooms){
+            for(let thisRoom  = 0; thisRoom < rooms.length; thisRoom++){
+                const r = rooms[thisRoom]
+                const playerId = game.stateOBS.playerId
+                if(r[playerId]){
+                    Object.assign(room, {thisRoom})
+                    return room
+                }
+            }
+        }
+
+        return {
+            findMyRoom,
+            seeState
+        }
+    }
+
+    let thisRoom = ""
+
+    setTimeout(async () => {
+        const stateUpdate = state_Update()
+        thisRoom = await stateUpdate.findMyRoom(game.state.rooms)
+        setInterval(()=>{
+            stateUpdate.seeState(game.state.rooms)
+            game.analyseForDestroyAloneRooms()
+        }, 500)
+    }, 600)
 
     async function initGame(data) {
         playerData = await data[0]
@@ -115,7 +163,7 @@
         selectedMode = await localStorage.getItem("selectedMode")
         imgs.sky.src = "img/sky.png"
         imgs.scene.src = "img/vqjdScene.png"
-        imgs.player.src = `img/${horse.nome}_vaquejada.png`
+        imgs.player.src = `img/${horse.nome}_vaquejada_Stay.png`
         game = createGame()
         server()
         init()
@@ -136,8 +184,10 @@
     }
 
     function update() {
-        scene.update()
-        player.update()
+        if(thisState === STATE.run){
+            scene.update()
+            player.update()
+        }
     }
 
     function server() {
@@ -158,6 +208,11 @@
 
             socket.on("remove-player", (command) => {
                 game.removePlayer(command)
+            })
+
+            socket.on("delete-room", (command) => {
+                game.analyseForDestroyAloneRooms()
+                socket.emit("delete-room", {type:"delete-room"})
             })
 
         })

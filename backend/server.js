@@ -45,6 +45,10 @@ sockets.on("connection", (socket) => {
         console.log(game.state)
     })
 
+    socket.on("delete-room", (command) => {
+        game.analyseForDestroyAloneRooms()
+    })
+
 
 })
 

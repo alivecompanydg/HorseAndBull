@@ -41,7 +41,7 @@ h1{
 #menu{
     position: absolute;
     height:60px;
-    background-color: rgb(232, 100, 27);
+    background-color: rgb(00, 00, 00);
     width:100%;
     margin:auto;
     top: 0px;
@@ -57,7 +57,8 @@ h1{
     height:40px;
     margin-top:30px;
     border:none;
-    background-image: linear-gradient( to bottom, white, #E67B12);
+    background-color: black;
+    color:white;
     font-weight: bold;
     border-radius: 4px;
 }
@@ -88,7 +89,8 @@ v{
 .noneBorder{
     border:none;
     text-align: center;
-    background-color: rgb(232, 100, 27);
+    background-color: black;
+    color:white;
     font-weight: bold;
     font-size: medium;
 }
@@ -106,7 +108,7 @@ v{
 }
 
 .leftDiv{
-    background-color: rgb(142, 204, 235);
+    background-color: rgb(183, 47, 0);
     position: absolute;
     width:40%;
     height:363px;
@@ -116,14 +118,22 @@ v{
 
 .rightDiv{
     background-color: rgb(155, 171, 178);
+    background-image: url("../../img/hara.png");
+    background-repeat: no-repeat;
+    background-position: 0px -180px;
+    background-size: cover;
     position:absolute;
     width:60%;
     height:263px;
     margin-top: 19px;
 }
 
+html, #mode, #gameStyle{
+    background-color: rgb(183, 47, 0);
+}
+
 .bottomDiv{
-    background-color: black;
+    background-color:rgb(58, 58, 58);
     position: absolute;
     width:60%;
     height:100px;
@@ -132,7 +142,7 @@ v{
 
 .about{
     border:none;
-    background-color: black;
+    background-color: rgb(58, 58, 58);
     color: white;
     text-align: left;
     width:44%;
