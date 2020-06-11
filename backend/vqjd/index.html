@@ -80,21 +80,23 @@
 
     }
 
-    const player = {
-        srcX: 0,
-        srcY: 0,
-        srcWidth: 454,
-        srcHeight: 340,
-        x: 30,
-        y: mattress.cnv.height - 277,
-        width: 320,
-        height: 270,
-        timer: 0,
-        velocity: 4,
+    class Player{
+        constructor() {
+            this.srcX = 0
+            this.srcY = 0
+            this.srcWidth = 454
+            this.srcHeight = 340
+            this.x = 30
+            this.y = mattress.cnv.height - 277
+            this.width = 320
+            this.height = 270
+            this.timer = 0
+            this.velocity = 4
+        }
 
-        draw() {
-            ctx.drawImage(imgs.player, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x, this.y, this.width, this.height)
-        },
+        draw(x, y) {
+            ctx.drawImage(imgs.player, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x + x, this.y + y, this.width, this.height)
+        }
 
         update() {
 
@@ -110,7 +112,12 @@
 
             this.srcX = Math.floor(this.timer / this.velocity) * this.srcWidth
         }
+
     }
+
+    const players = [
+        new Player()
+    ]
 
     function state_Update() {
 
@@ -121,9 +128,11 @@
             if(Object.keys(rooms[room.thisRoom]).length === 2){
                 thisState = STATE.ready
                 console.log("Existem dois players")
+                players.push(new Player())
             }else{
                 console.log("Existe um player")
                 thisState = STATE.awaitTwoPlayers
+                players.splice(1, 1)
             }
         }
 
@@ -152,7 +161,7 @@
         setInterval(()=>{
             stateUpdate.seeState(game.state.rooms)
             game.analyseForDestroyAloneRooms()
-        }, 500)
+        }, 200)
     }, 600)
 
     async function initGame(data) {
@@ -169,6 +178,14 @@
         init()
     }
 
+    const checkPlayers = () => {
+        if(players.length === 1){
+            ctx.fillStyle = "black"
+            ctx.font = "25px Arial"
+            ctx.fillText("AGUARDANDO SEGUNDO PLAYER", mattress.cnv.width/2-mattress.cnv.width/4, mattress.cnv.height/2)
+        }
+    }
+
     function init() {
         requestAnimationFrame(init, mattress.cnv)
         mattress.fullScrean()
@@ -180,13 +197,23 @@
         mattress.clear()
         mattress.drawBackground(imgs.sky)
         scene.draw()
-        player.draw()
+        if(players[1]){
+            ctx.globalAlpha = 0.8
+            players[1].draw(4, -14)
+        }
+        if(players[0]){
+            ctx.globalAlpha = 1
+            players[0].draw(-13, 20)
+        }
+        checkPlayers()
     }
 
     function update() {
         if(thisState === STATE.run){
             scene.update()
-            player.update()
+            for(const player in players){
+                players[player].update()
+            }
         }
     }
 
