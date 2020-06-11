@@ -116,8 +116,12 @@ v{
     margin-left: 60%;
 }
 
+#_selectMode{
+    background-color: rgb(183, 47, 0);
+}
+
 .rightDiv{
-    background-color: rgb(155, 171, 178);
+    background-color: rgb(183, 47, 0);
     background-image: url("../../img/hara.png");
     background-repeat: no-repeat;
     background-position: 0px -180px;
