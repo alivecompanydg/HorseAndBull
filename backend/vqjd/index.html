@@ -20,6 +20,7 @@
     mattress.center()
 
     let event = ""
+    let playId = ""
 
     let playerData = ""
     let horse = ""
@@ -42,7 +43,7 @@
         sky: new Image(),
         scene: new Image(),
         point: new Image(),
-        player: new Image(),
+        player: [new Image(), new Image()],
         horse: new Image()
     }
 
@@ -94,8 +95,8 @@
             this.velocity = 4
         }
 
-        draw(x, y) {
-            ctx.drawImage(imgs.player, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x + x, this.y + y, this.width, this.height)
+        draw(x, y, index) {
+            ctx.drawImage(imgs.player[index], this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x + x, this.y + y, this.width, this.height)
         }
 
         update() {
@@ -107,7 +108,7 @@
             }
 
             if(thisState === STATE.run){
-                imgs.player.src = `img/${horse.nome}_vaquejada.png`
+                imgs.player[0].src = `img/${horse.nome}_vaquejada.png`
             }
 
             this.srcX = Math.floor(this.timer / this.velocity) * this.srcWidth
@@ -125,10 +126,21 @@
 
         function seeState(rooms) {
             console.log("chamou")
-            if(Object.keys(rooms[room.thisRoom]).length === 2){
+
+            function catchData() {
                 thisState = STATE.ready
                 console.log("Existem dois players")
+                const play1 = Object.keys(game.state.rooms[thisRoom.thisRoom])[0]
+                const play2 = Object.keys(game.state.rooms[thisRoom.thisRoom])[1]
+                const playerId = play1 !== playId ? play1 : play2
+                console.log(playerId)
                 players.push(new Player())
+                console.log(game.state.rooms[thisRoom.thisRoom][playerId].horse.nome)
+                imgs.player[1].src = `img/${game.state.rooms[thisRoom.thisRoom][playerId].horse.nome}_vaquejada_Stay.png`
+            }
+
+            if(Object.keys(rooms[room.thisRoom]).length === 2){
+                    catchData()
             }else{
                 console.log("Existe um player")
                 thisState = STATE.awaitTwoPlayers
@@ -172,7 +184,8 @@
         selectedMode = await localStorage.getItem("selectedMode")
         imgs.sky.src = "img/sky.png"
         imgs.scene.src = "img/vqjdScene.png"
-        imgs.player.src = `img/${horse.nome}_vaquejada_Stay.png`
+        imgs.player[0].src = `img/${horse.nome}_vaquejada_Stay.png`
+        imgs.player[1].src = `img/${horse.nome}_vaquejada_Stay.png`
         game = createGame()
         server()
         init()
@@ -199,11 +212,11 @@
         scene.draw()
         if(players[1]){
             ctx.globalAlpha = 0.8
-            players[1].draw(4, -14)
+            players[1].draw(4, -14, 1)
         }
         if(players[0]){
             ctx.globalAlpha = 1
-            players[0].draw(-13, 20)
+            players[0].draw(-13, 20, 0)
         }
         checkPlayers()
     }
@@ -223,6 +236,7 @@
 
         socket.on("connect", () => {
             const playerId = socket.id
+            playId = playerId
             console.log(`Player connected on server with as ${playerId}`)
 
             socket.on("setup", (state) => {
@@ -241,6 +255,18 @@
                 game.analyseForDestroyAloneRooms()
                 socket.emit("delete-room", {type:"delete-room"})
             })
+
+            setTimeout(() => {
+                const obj = {
+                    playerId:playerId,
+                    name:playerData.name,
+                    horse,
+                    room:thisRoom.thisRoom
+                }
+                //socket.emit("modify-state", obj)
+                game.modifyState(obj)
+                socket.emit("setup", game.state)
+            }, 1000)
 
         })
 

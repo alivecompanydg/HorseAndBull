@@ -71,6 +71,19 @@ function createGame() {
         
     }
 
+    function modifyState(command) {
+        const playerId = command.playerId
+        state.rooms[command.room][playerId] = command
+        console.log(state.rooms[command.room][playerId])
+        notifyAll({
+            type:"modify-state",
+            playerId:command.playerId,
+            name:command.name,
+            horse:command.horse,
+            room:command.room
+        })
+    }
+
     function removePlayer(command){
         const playerId = command.playerId
         for(const room in state.rooms){
@@ -106,6 +119,7 @@ function createGame() {
         registerPlayerId,
         analyseForDestroyAloneRooms,
         destroyAloneRoom,
+        modifyState,
         state,
         stateOBS,
         addRoom

@@ -49,6 +49,15 @@ sockets.on("connection", (socket) => {
         game.analyseForDestroyAloneRooms()
     })
 
+    socket.on("modify-state", (command) => {
+        game.modifyState(command)
+    })
+
+    socket.on("setup", (state) => {
+        game.setState(state)
+        sockets.emit("setup", game.state)
+    })
+
 
 })
 
