@@ -92,7 +92,7 @@
             this.width = 320
             this.height = 270
             this.timer = 0
-            this.velocity = 4
+            this.velocity = 2
         }
 
         draw(x, y, index) {
@@ -136,7 +136,11 @@
                 console.log(playerId)
                 players.push(new Player())
                 console.log(game.state.rooms[thisRoom.thisRoom][playerId].horse.nome)
-                imgs.player[1].src = `img/${game.state.rooms[thisRoom.thisRoom][playerId].horse.nome}_vaquejada_Stay.png`
+                if(thisState !== STATE.run){
+                    imgs.player[1].src = `img/${game.state.rooms[thisRoom.thisRoom][playerId].horse.nome}_vaquejada_Stay.png`
+                }else{
+                    imgs.player[1].src = `img/${game.state.rooms[thisRoom.thisRoom][playerId].horse.nome}_vaquejada.png`
+                }
             }
 
             if(Object.keys(rooms[room.thisRoom]).length === 2){
