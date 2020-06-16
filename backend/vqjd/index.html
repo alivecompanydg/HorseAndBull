@@ -114,11 +114,19 @@
             this.srcX = Math.floor(this.timer / this.velocity) * this.srcWidth
         }
 
+        drawName(name, x, y) {
+            ctx.font = "17px Arial"
+            ctx.fillStyle = "white"
+            ctx.fillText(name, x + 100, y)
+        }
+
     }
 
     const players = [
         new Player()
     ]
+
+    let anotherPlayerName = ""
 
     function state_Update() {
 
@@ -135,7 +143,7 @@
                 const playerId = play1 !== playId ? play1 : play2
                 console.log(playerId)
                 players.push(new Player())
-                console.log(game.state.rooms[thisRoom.thisRoom][playerId].horse.nome)
+                anotherPlayerName = game.state.rooms[thisRoom.thisRoom][playerId].name
                 if(thisState !== STATE.run){
                     imgs.player[1].src = `img/${game.state.rooms[thisRoom.thisRoom][playerId].horse.nome}_vaquejada_Stay.png`
                 }else{
@@ -214,13 +222,15 @@
         mattress.clear()
         mattress.drawBackground(imgs.sky)
         scene.draw()
-        if(players[1]){
+        if(players[1] && anotherPlayerName){
             ctx.globalAlpha = 0.8
             players[1].draw(4, -14, 1)
+            players[1].drawName(anotherPlayerName, 60, mattress.cnv.height - 277 + (-30))
         }
         if(players[0]){
             ctx.globalAlpha = 1
             players[0].draw(-13, 20, 0)
+            players[0].drawName(playerData.name, 45, mattress.cnv.height - 277)
         }
         checkPlayers()
     }

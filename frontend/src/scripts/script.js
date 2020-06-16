@@ -117,7 +117,7 @@ async function playevent() {
         break
 
         case "Vaquejada":
-            alert("Vaquejada")
+            window.location.href = host
         break
     }
 }
@@ -132,7 +132,7 @@ function printEvents(data) {
 
     arrayEventDatas = data
 
-        html = `<center><h1 onclick="showMenu()"><w>HaB</w></h1><h2>Lista de eventos</h2><table border="1" width="80%">`
+        html = `<center><h1 onclick="showMenu()"><w></w></h1><h2>Lista de eventos</h2><table border="1" width="80%">`
 
         html += "<tr>"
             html += `<th>Nome</th>`
@@ -179,7 +179,7 @@ function printEvents(data) {
     html += "</table><br><p>Você somente pode participar de um evento por vez. Caso tente se inscrever em um segundo evento, o primeiro será cancelado.</p></center>"
     
     }else{
-        html = `<center><h1 onclick="showMenu()"><w>HaB</w></h1><h2>Lista de eventos</h2><table border="1" width="80%"><p>Nenhum evento cadastrado</p></center>`
+        html = `<center><h1 onclick="showMenu()"><w></w></h1><h2>Lista de eventos</h2><table border="1" width="80%"><p>Nenhum evento cadastrado</p></center>`
     }
     printHtml("eventLeft", html)
 
