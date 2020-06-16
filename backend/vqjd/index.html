@@ -137,14 +137,15 @@
 
             function catchData() {
                 thisState = STATE.ready
-                console.log("Existem dois players")
+                //console.log("Existem dois players")
                 const play1 = Object.keys(game.state.rooms[thisRoom.thisRoom])[0]
                 const play2 = Object.keys(game.state.rooms[thisRoom.thisRoom])[1]
                 const playerId = play1 !== playId ? play1 : play2
-                console.log(playerId)
+                //console.log(playerId)
                 players.push(new Player())
                 anotherPlayerName = game.state.rooms[thisRoom.thisRoom][playerId].name
                 if(thisState !== STATE.run){
+                    console.log(game.state.rooms[thisRoom.thisRoom][playerId].horse.nome)
                     imgs.player[1].src = `img/${game.state.rooms[thisRoom.thisRoom][playerId].horse.nome}_vaquejada_Stay.png`
                 }else{
                     imgs.player[1].src = `img/${game.state.rooms[thisRoom.thisRoom][playerId].horse.nome}_vaquejada.png`
@@ -154,7 +155,7 @@
             if(Object.keys(rooms[room.thisRoom]).length === 2){
                     catchData()
             }else{
-                console.log("Existe um player")
+                //console.log("Existe um player")
                 thisState = STATE.awaitTwoPlayers
                 players.splice(1, 1)
             }
@@ -186,7 +187,7 @@
             stateUpdate.seeState(game.state.rooms)
             game.analyseForDestroyAloneRooms()
         }, 200)
-    }, 600)
+    }, 400)
 
     async function initGame(data) {
         playerData = await data[0]
@@ -277,7 +278,6 @@
                     horse,
                     room:thisRoom.thisRoom
                 }
-                //socket.emit("modify-state", obj)
                 game.modifyState(obj)
                 socket.emit("setup", game.state)
             }, 1000)
