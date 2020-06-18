@@ -44,7 +44,8 @@
         scene: new Image(),
         point: new Image(),
         player: [new Image(), new Image()],
-        horse: new Image()
+        horse: new Image(),
+        bull: new Image()
     }
 
     const STATE = {
@@ -136,7 +137,9 @@
             console.log("chamou")
 
             function catchData() {
-                thisState = STATE.ready
+                //if(thisState !== STATE.ready){
+                //    thisState = STATE.ready
+                //}
                 //console.log("Existem dois players")
                 const play1 = Object.keys(game.state.rooms[thisRoom.thisRoom])[0]
                 const play2 = Object.keys(game.state.rooms[thisRoom.thisRoom])[1]
@@ -180,6 +183,59 @@
 
     let thisRoom = ""
 
+    const statesUpdate = {
+        thisState:thisState,
+        state:"",
+
+        update() {
+            this.thisState = thisState
+
+            switch(thisState){
+                case STATE.ready:
+                this.state = "READY"
+                break
+                case STATE.steady:
+                this.state = "STEADY"
+                break
+            }
+
+            Bull.update()
+
+        },
+
+        draw() {
+
+            if(this.thisState !== STATE.run){
+                ctx.fillStyle = "black"
+                ctx.font = "25px Arial"
+                ctx.fillText(this.state, mattress.cnv.width/2-30, mattress.cnv.height/2)
+            }
+
+        }
+    }
+
+    const Bull = {
+
+        draw() {},
+
+        update() {}
+        
+    }
+
+    let inter = setInterval(() => {
+        if(Object.keys(game.state.rooms[thisRoom.thisRoom]).length === 2){
+                if(thisState === STATE.awaitTwoPlayers){
+                    thisState = STATE.ready
+                }else if(thisState === STATE.ready){
+                    thisState = STATE.steady
+                }else if(thisState === STATE.steady){
+                    thisState = STATE.run
+                }else{
+                    clearInterval(inter)
+                }
+        }
+    }, 1000)
+
     setTimeout(async () => {
         const stateUpdate = state_Update()
         thisRoom = await stateUpdate.findMyRoom(game.state.rooms)
@@ -187,7 +243,7 @@
             stateUpdate.seeState(game.state.rooms)
             game.analyseForDestroyAloneRooms()
         }, 200)
-    }, 400)
+    }, 550)
 
     async function initGame(data) {
         playerData = await data[0]
@@ -199,6 +255,7 @@
         imgs.scene.src = "img/vqjdScene.png"
         imgs.player[0].src = `img/${horse.nome}_vaquejada_Stay.png`
         imgs.player[1].src = `img/${horse.nome}_vaquejada_Stay.png`
+        imgs.bull.src = "img/bull.png"
         game = createGame()
         server()
         init()
@@ -234,9 +291,11 @@
             players[0].drawName(playerData.name, 45, mattress.cnv.height - 277)
         }
         checkPlayers()
+        statesUpdate.draw()
     }
 
     function update() {
+        statesUpdate.update()
         if(thisState === STATE.run){
             scene.update()
             for(const player in players){
@@ -276,7 +335,8 @@
                     playerId:playerId,
                     name:playerData.name,
                     horse,
-                    room:thisRoom.thisRoom
+                    room:thisRoom.thisRoom,
+                    hit:0
                 }
                 game.modifyState(obj)
                 socket.emit("setup", game.state)

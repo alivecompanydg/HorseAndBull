@@ -80,7 +80,8 @@ function createGame() {
             playerId:command.playerId,
             name:command.name,
             horse:command.horse,
-            room:command.room
+            room:command.room,
+            hit:command.hit
         })
     }
 
