@@ -70,6 +70,28 @@ module.exports = {
 
         return res.json(player)
 
+    },
+
+    async Recept(req, res) {
+
+        const { email, qntCoins } = req.query
+
+        const play = await Player.findAll({
+            where:{
+                email
+            }
+        })
+
+        await Player.update({
+            coins:parseFloat(play[0].coins) + parseFloat(qntCoins)
+        }, {
+            where: {
+                email
+            }
+        })
+
+        return res.json(play)
+
     }
     
 }

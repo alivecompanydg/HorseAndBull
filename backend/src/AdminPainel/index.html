@@ -44,7 +44,7 @@
             </form>
         </div><hr>
 
-        <h2>Lista de players:</h2>
+        <h2>Quantidade de players:</h2>
 
         <div id="playersList">
 
@@ -56,6 +56,17 @@
 
         <div id="paymentDiv">
 
+        </div><hr>
+
+        <div>
+            <center>
+
+            <h1>Pagamentos</h1>
+            <h3>Caso tenha ocorrido algum problema com a compra de moedas de algum player.<br>Ponha seu email aqui para entregar as moedas para ele.</h3>
+
+            <label>Email: <input type="email" id="em" placeholder="Email do player" required><br>Quantidade de moedas: <input type="number" id="qntcoin" placeholder="Moedas" required><br><button onclick="transferir()">Transferir</button></label>
+
+            </center>
         </div><hr>
 
         <div id="newItem">
@@ -139,6 +150,30 @@
         getAnnouncements()
     }
 }
+
+
+    function transferir() {
+
+        const qntcoin = document.querySelector("#qntcoin").value
+        const email = document.querySelector("#em").value
+
+        if(email && qntcoin){
+            const url = `${host}/recept?email=${email}&qntCoins=${qntcoin}`
+            fetch(url)
+            .then((response) => {
+                return response.json()
+            })
+            .then((data) => {
+                alert("Player pago")
+            })
+            .catch((err) => {
+                alert("houve algum erro")
+            })
+        }else{
+            alert("Digite os valores")
+        }
+
+    }
 
     function getAnnouncements() {
         let url = `${host}/findAn`
@@ -543,7 +578,8 @@
         })
         .then( (data) => {
             console.log(data)
-            prepareandPrintTable(data)
+            //prepareandPrintTable(data)
+            numberOfPlayers(data.length)
         })
         .catch( (err) => {
             document.getElementById("playersList").innerHTML = `<p>${err}</p>`
@@ -579,6 +615,11 @@
 
             printData("playersList", html)
 
+        }
+
+        function numberOfPlayers(number) {
+            const html = `<center><strong>${number} Players</strong><br><br></center>`
+            printData("playersList", html)
         }
 
     }

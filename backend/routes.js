@@ -14,6 +14,7 @@ routes.post("/cad", playerController.Store)
 routes.get("/players", eventController.Index)
 routes.get("/findMe", playerController.FindMe)
 routes.get("/setAnimal", playerController.setAnimal)
+routes.get("/recept", playerController.Recept)
 
 //Rotas relacionadasaos eventos
 routes.post("/newEvent", eventController.Store)
