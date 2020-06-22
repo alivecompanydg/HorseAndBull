@@ -215,19 +215,36 @@
     const Bull = {
 
         srcX:0,
-        srcY:0,
-        srcWidth:0,
-        srcHeight:0,
-        x:0,
-        y:0,
-        width:0,
-        height:0,
+        srcY:96.25,
+        srcWidth:48,
+        srcHeight:48.125,
+        x:-350,
+        y:mattress.cnv.height - 275,
+        width:290,
+        height:230,
+        animations:3,
+        velocity:2,
+        countAnima:0,
 
         draw() {
-            //ctx.drawImage(imgs.bull, )
+            //
+            ctx.drawImage(imgs.bull, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x, this.y, this.width, this.height)
         },
 
-        update() {}
+        update() {
+            this.countAnima++
+
+            if(this.countAnima >= this.animations*this.velocity){
+                this.countAnima = 0
+            }
+
+            if( this.x + this.width <= mattress.cnv.width/2 + 50 && thisState === STATE.steady){
+                this.x += 3
+            }
+
+            this.srcX = Math.floor(this.countAnima/this.velocity) * this.srcWidth
+
+        }
         
     }
 
@@ -238,7 +255,9 @@
                 }else if(thisState === STATE.ready){
                     thisState = STATE.steady
                 }else if(thisState === STATE.steady){
-                    thisState = STATE.run
+                    if(Bull.x + Bull.width >= mattress.cnv.width/2){
+                        thisState = STATE.run
+                    }
                 }else{
                     clearInterval(inter)
                 }
@@ -289,12 +308,12 @@
         mattress.clear()
         mattress.drawBackground(imgs.sky)
         scene.draw()
-        Bull.draw()
         if(players[1] && anotherPlayerName){
             ctx.globalAlpha = 0.8
             players[1].draw(4, -14, 1)
             players[1].drawName(anotherPlayerName, 60, mattress.cnv.height - 277 + (-30))
         }
+        Bull.draw()
         if(players[0]){
             ctx.globalAlpha = 1
             players[0].draw(-13, 20, 0)
@@ -305,6 +324,7 @@
     }
 
     function update() {
+        Bull.update()
         statesUpdate.update()
         if(thisState === STATE.run){
             scene.update()
