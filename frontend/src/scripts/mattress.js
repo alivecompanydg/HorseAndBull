@@ -8,6 +8,8 @@ class Mattress{
         this.singleIdentifier = ""
         this.cnv = ""
         this.ctx = ""
+        this.host = ""
+        this.header = ""
     }
 
     clear() {
@@ -112,6 +114,77 @@ class Mattress{
         sound.src = musicSrc
         sound.type = "audio/mpeg"
         sound.play()
+    }
+
+    configure(command) {
+        if(command.header){
+            this.header = command.header
+        }else{
+            this.header = ""
+        }
+        if(command.port){
+            this.host = `${command.host}:${command.port}/`
+        }else{
+            this.host = `${command.host}`
+        }
+    }
+
+    get(func, route, command) {
+        let newHost = this.host+="/"
+        if(route){
+            newHost+=route
+        }
+        if(command){
+            newHost += "?"
+            for(const index in command){
+                const itemName = index
+                const itemValue = command[index]
+                newHost += `${itemName}=${itemValue}&`
+            }
+            newHost = newHost.substring(0,(newHost.length - 1))
+        }
+        fetch(newHost, {
+            mode:"cors",
+            method:"GET"
+        })
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            func(data)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }
+
+    post(func, route, command) {
+        let newHost = this.host+="/"
+        if(route){
+            newHost+=route
+        }
+        if(command){
+            newHost += "?"
+            for(const index in command){
+                const itemName = index
+                const itemValue = command[index]
+                newHost += `${itemName}=${itemValue}&`
+            }
+            newHost = newHost.substring(0,(newHost.length - 1))
+        }
+        fetch(newHost, {
+            mode:"cors",
+            method:"POST"
+        })
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            func(data)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
     }
 
 }
