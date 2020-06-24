@@ -134,7 +134,6 @@
         const room = {}
 
         function seeState(rooms) {
-            console.log("chamou")
 
             function catchData() {
                 //if(thisState !== STATE.ready){
@@ -148,7 +147,7 @@
                 players.push(new Player())
                 anotherPlayerName = game.state.rooms[thisRoom.thisRoom][playerId].name
                 if(thisState !== STATE.run){
-                    console.log(game.state.rooms[thisRoom.thisRoom][playerId].horse.nome)
+                    console.log(game.state.rooms[{thisRoom}][playerId].horse.nome)
                     imgs.player[1].src = `img/${game.state.rooms[thisRoom.thisRoom][playerId].horse.nome}_vaquejada_Stay.png`
                 }else{
                     imgs.player[1].src = `img/${game.state.rooms[thisRoom.thisRoom][playerId].horse.nome}_vaquejada.png`
@@ -164,12 +163,12 @@
             }
         }
 
-        function findMyRoom(rooms){
+        async function findMyRoom(rooms){
             for(let thisRoom  = 0; thisRoom < rooms.length; thisRoom++){
                 const r = rooms[thisRoom]
                 const playerId = game.stateOBS.playerId
                 if(r[playerId]){
-                    Object.assign(room, {thisRoom})
+                    await Object.assign(room, {thisRoom})
                     return room
                 }
             }
@@ -273,6 +272,60 @@
         }, 200)
     }, 550)
 
+    const vqjdState = {
+        imgLocation:0,
+        qtState:false,
+        winQtState:false,
+        srcX: 0,
+        srcY: 0,
+        srcWidth: 1085,
+        srcHeight: 1085,
+        x:mattress.cnv.width - 3 * 32,
+        y: mattress.cnv.height / 2 - 32,
+        width:64,
+        height:64,
+        rectX:mattress.cnv.width - 2 * 32,
+        rectY:mattress.cnv.height / 2 - 32,
+        ray: 250,
+        decrement:6,
+        dividedBy: 3,
+
+        draw() {
+            if(this.qtState === true && !this.winQtState){
+                ctx.fillStyle = "red"
+                ctx.fillRect(this.rectX, this.rectY - 120, 50, 120)
+                ctx.fillRect(this.rectX, this.rectY + 25+Math.pow(5*Math.pow(10,-horse.float),3), 50, 120)
+                ctx.fillStyle = "green"
+                ctx.fillRect(this.rectX, this.rectY, 50, 25+Math.pow(5*Math.pow(10,-horse.float),3))
+                ctx.drawImage(imgs.point, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x, this.y, this.width, this.height)
+            }
+        },
+
+        update() {
+            this.imgLocation = scene.x
+            if(this.imgLocation <= -scene.width/2){
+                this.qtState = true
+            }
+
+            //if(this.qtState){
+            //    this.ray --
+            //}else{
+            //    this.ray = 250
+            //}
+            //if(this.ray < 70){
+            //    this.visible = false
+            //}
+            this.y -= this.decrement
+
+            if(this.y + this.width/2 <= this.rectY - 120){
+                this.decrement = -this.decrement
+            }
+            else if(this.y + this.width/2 >= this.rectY + 25+Math.pow(5*Math.pow(10,-horse.float),3) + 120) {
+                this.decrement = -this.decrement
+            }
+        }
+    }
+
     async function initGame(data) {
         playerData = await data[0]
         _playerData = data[0]
@@ -281,6 +334,7 @@
         selectedMode = await localStorage.getItem("selectedMode")
         imgs.sky.src = "img/sky.png"
         imgs.scene.src = "img/vqjdScene.png"
+        imgs.point.src = "img/point.png"
         imgs.player[0].src = `img/${horse.nome}_vaquejada_Stay.png`
         imgs.player[1].src = `img/${horse.nome}_vaquejada_Stay.png`
         imgs.bull.src = "img/bull.png"
@@ -308,19 +362,21 @@
         mattress.clear()
         mattress.drawBackground(imgs.sky)
         scene.draw()
+        vqjdState.draw()
         if(players[1] && anotherPlayerName){
             ctx.globalAlpha = 0.8
             players[1].draw(4, -14, 1)
             players[1].drawName(anotherPlayerName, 60, mattress.cnv.height - 277 + (-30))
         }
+        ctx.globalAlpha = 1
         Bull.draw()
         if(players[0]){
-            ctx.globalAlpha = 1
             players[0].draw(-13, 20, 0)
             players[0].drawName(playerData.name, 45, mattress.cnv.height - 277)
         }
         checkPlayers()
         statesUpdate.draw()
+        vqjdState.update()
     }
 
     function update() {

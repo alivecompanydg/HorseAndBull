@@ -129,11 +129,6 @@
         localStorage.setItem("selectedMode", "NO")
     }
 
-    async function selectedMode(mode) {
-        await localStorage.setItem("selectedMode", mode)
-        window.location.href = host
-    }
-
     if(!localStorage.getItem("event")){
         localStorage.setItem("event", "FALSE")
     }else{

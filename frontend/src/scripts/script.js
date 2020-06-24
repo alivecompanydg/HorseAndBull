@@ -185,6 +185,11 @@ function printEvents(data) {
 
 }
 
+async function selectedMode(mode) {
+    await localStorage.setItem("selectedMode", mode)
+    window.location.href = host
+}
+
 function printHtml(div, html) {
     document.getElementById(`${div}`).innerHTML = html
 }
