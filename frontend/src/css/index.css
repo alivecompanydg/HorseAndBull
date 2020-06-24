@@ -53,11 +53,15 @@ h1{
 }
 
 .button{
-    width:53%;
-    height:40px;
+    width:55%;
+    height:50px;
+    background-image: url("../../img/button.png");
+    background-repeat: no-repeat;
+    background-position: 0px 0px;
+    background-size: cover;
     margin-top:30px;
     border:none;
-    background-color: black;
+    background-color: transparent;
     color:white;
     font-weight: bold;
     border-radius: 4px;
