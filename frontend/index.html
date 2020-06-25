@@ -107,14 +107,14 @@
         <center>
 
             <div id="mode">
-                <a href="game.html"><button class="button">CORRIDA</button></a>
-                <button class="button" onclick="changeDisplay(document.getElementById('mode'), changeDisplay(document.getElementById('gameStyle')))">VAQUEJADA</button>
+                <a href="game.html"><button class="button">CORRIDA</button></a><br>
+                <button class="button" onclick="changeDisplay(document.getElementById('mode'), changeDisplay(document.getElementById('gameStyle')))">VAQUEJADA</button><br>
                 <a href="index.html"><button class="button">VOLTAR AO MENU</button></a>
             </div>
 
             <div id="gameStyle" style="display: none;">
-                <button class="button" onclick="selectedMode('ESTEIRA')">ESTEIRA</button>
-                <button class="button" onclick="selectedMode('PUXADOR')">PUXADOR</button>
+                <button class="button" onclick="selectedMode('ESTEIRA')">ESTEIRA</button><br>
+                <button class="button" onclick="selectedMode('PUXADOR')">PUXADOR</button><br>
                 <a href="index.html"><button class="button">VOLTAR AO MENU</button></a>
             </div>
 
@@ -149,6 +149,16 @@
             selectHorse(index)
         }
     }
+
+    setInterval(() => {
+        if(document.querySelector("#_selectMode").style.display === "block" ){
+            const btns = document.querySelectorAll(".button")
+            btns.forEach(btn => {
+                btn.style.width = "31%"
+                btn.style.height = "70px"
+            })
+        }
+    },200)
 
     function selectHorse(index){
         let animal = JSON.stringify(hara.horse[index])
