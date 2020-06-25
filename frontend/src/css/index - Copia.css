@@ -114,6 +114,7 @@ v{
 
 .leftDiv{
     background-repeat: no-repeat;
+    background-image: url("../../img/bgc.png");
     background-position: 0px 0px;
     background-size: cover;
     position: absolute;
