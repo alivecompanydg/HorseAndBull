@@ -23,6 +23,7 @@ const game = createGame()
 
 game.subscribe((command) => {
     sockets.emit(command.type, command)
+    console.log(`invocando ${command.type}`)
 })
 
 sockets.on("connection", (socket) => {

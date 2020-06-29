@@ -85,16 +85,23 @@ function createGame() {
         })
     }
 
-    function qtEvent(command) {
-        setHit(command)
-    }
-
     function setHit(command) {
         const playerId = command.playerId
         const room = command.thisRoom
         const hit = command.hit
 
+        const obj = {
+            type:"hit-player",
+            playerId:command.playerId,
+            room:command.thisRoom,
+            hit:command.hit
+        }
         state.rooms[room][playerId].hit = hit
+        notifyAll(obj)
+    }
+
+    function qtEvent(command) {
+        setHit(command)
     }
 
     function removePlayer(command){
@@ -129,8 +136,8 @@ function createGame() {
         removePlayer,
         notifyAll,
         subscribe,
-        qtEvent,
         setHit,
+        qtEvent,
         registerPlayerId,
         analyseForDestroyAloneRooms,
         destroyAloneRoom,

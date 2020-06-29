@@ -147,7 +147,6 @@
                 players.push(new Player())
                 anotherPlayerName = game.state.rooms[thisRoom.thisRoom][playerId].name
                 if(thisState !== STATE.run){
-                    console.log(game.state.rooms[{thisRoom}][playerId].horse.nome)
                     imgs.player[1].src = `img/${game.state.rooms[thisRoom.thisRoom][playerId].horse.nome}_vaquejada_Stay.png`
                 }else{
                     imgs.player[1].src = `img/${game.state.rooms[thisRoom.thisRoom][playerId].horse.nome}_vaquejada.png`
@@ -269,7 +268,7 @@
             stateUpdate.seeState(game.state.rooms)
             game.analyseForDestroyAloneRooms()
         }, 200)
-    }, 550)
+    }, 600)
 
     const vqjdState = {
         imgLocation:0,
@@ -429,6 +428,10 @@
                 socket.emit("delete-room", {type:"delete-room"})
             })
 
+            socket.on("hit-player", (command) => {
+                alert("chamado")
+            })
+
             setTimeout(() => {
                 const obj = {
                     playerId:playerId,
@@ -437,6 +440,7 @@
                     room:thisRoom.thisRoom,
                     hit:false
                 }
+
                 game.modifyState(obj)
                 socket.emit("setup", game.state)
             }, 1000)
