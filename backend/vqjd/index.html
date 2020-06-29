@@ -49,10 +49,10 @@
     }
 
     const STATE = {
-        awaitTwoPlayers:1,
+        awaitTwoPlayers: 1,
         ready: 2,
         steady: 3,
-        run:4
+        run: 4
     }
 
     let thisState = STATE.awaitTwoPlayers
@@ -93,7 +93,7 @@
             this.width = 320
             this.height = 270
             this.timer = 0
-            this.velocity = 2
+            this.velocity = 4
         }
 
         draw(x, y, index) {
@@ -222,7 +222,7 @@
         width:290,
         height:230,
         animations:3,
-        velocity:2,
+        velocity:4,
         countAnima:0,
 
         draw() {
@@ -387,6 +387,20 @@
                 players[player].update()
             }
         }
+
+        if(thisState === STATE.run) {
+                mattress.cnv.onclick = function() {
+                    if(vqjdState.qtState === true && !vqjdState.winQtState){
+                        if(vqjdState.y + vqjdState.height/2 >= vqjdState.rectY && vqjdState.y + vqjdState.height/2 <= vqjdState.rectY + 25+Math.pow(5*Math.pow(10,-horse.float),3)){
+                            game.qtEvent({ playerId:playId, thisRoom:thisRoom.thisRoom, hit:true })
+                            vqjdState.winQtState = true
+                        }else{
+                            game.qtEvent({ playerId:playId, thisRoom:thisRoom.thisRoom, hit:false })
+                            vqjdState.winQtState = true
+                        }
+                    }
+                }
+            }
     }
 
     function server() {
@@ -421,7 +435,7 @@
                     name:playerData.name,
                     horse,
                     room:thisRoom.thisRoom,
-                    hit:0
+                    hit:false
                 }
                 game.modifyState(obj)
                 socket.emit("setup", game.state)

@@ -85,6 +85,18 @@ function createGame() {
         })
     }
 
+    function qtEvent(command) {
+        setHit(command)
+    }
+
+    function setHit(command) {
+        const playerId = command.playerId
+        const room = command.thisRoom
+        const hit = command.hit
+
+        state.rooms[room][playerId].hit = hit
+    }
+
     function removePlayer(command){
         const playerId = command.playerId
         for(const room in state.rooms){
@@ -117,6 +129,8 @@ function createGame() {
         removePlayer,
         notifyAll,
         subscribe,
+        qtEvent,
+        setHit,
         registerPlayerId,
         analyseForDestroyAloneRooms,
         destroyAloneRoom,

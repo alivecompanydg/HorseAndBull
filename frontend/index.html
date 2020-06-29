@@ -35,11 +35,12 @@
         </form>
     </div>
 
-    <div id="menu" style="display: none;">
+    <div id="menu" style="display: none; background-color: rgb(17, 17, 17);">
 
             <h1 onclick="showMenu()" class="mainMenu"><w></w></h1>
-            <label><input type="text" class="noneBorder" readonly id="namePlayer"><input type="text" class="noneBorder" readonly id="coins"><input type="text" class="noneBorder" readonly id="EventCoins" onclick="withdraw()"></label>
-            
+            <label><input type="text" class="noneBorder" style="background-color: rgb(17, 17, 17);" readonly id="namePlayer"><input type="text" style="background-color: rgb(17, 17, 17);" class="noneBorder" readonly id="coins"><input type="text" style="background-color: rgb(17, 17, 17);" class="noneBorder" readonly id="EventCoins" onclick="withdraw()"></label>
+            <label id="soundicon"></label>
+
     <div class="rightDiv" id="rightDiv">
 
     </div>
@@ -55,7 +56,7 @@
         </center>
     </div>
 
-    <div class="leftDiv">
+    <div class="leftDiv" style="background-image:url('img/bgc.png'); background-size: cover; background-position-x: -23px;">
     <br><button class="button" onclick="selectMode()">TREINAR</button><br>
             <button class="button" onclick="findEvents(), changeDisplay(document.getElementById('menu')), changeDisplay(document.getElementById('allEvents'))">EVENTOS</button><br>
             <button class="button" onclick="changeDisplay(document.getElementById('menu')), changeDisplay(document.getElementById('buyCoins'))">MOEDAS</button><br>
@@ -103,10 +104,10 @@
 
     </div>
 
-    <div id="_selectMode" style="position:absolute; display: none; width:98%; height:50%; margin-top: 60px;">
+    <div id="_selectMode" style="display: none;">
         <center>
 
-            <div id="mode">
+            <div id="mode" style="width:100%; height:100%;">
                 <a href="game.html"><button class="button">CORRIDA</button></a><br>
                 <button class="button" onclick="changeDisplay(document.getElementById('mode'), changeDisplay(document.getElementById('gameStyle')))">VAQUEJADA</button><br>
                 <a href="index.html"><button class="button">VOLTAR AO MENU</button></a>
@@ -122,6 +123,41 @@
     </div>
 
     <script>
+
+    function verifySound() {
+        if(localStorage.getItem("sound") === "True"){
+            let html = `<img src="img/som.png" onclick="mute()" width="25px" height="25px">`
+            document.querySelector("#soundicon").innerHTML = html
+        }else{
+            let html = `<img src="img/semsom.png" onclick="mute()" width="25px" height="25px">`
+            document.querySelector("#soundicon").innerHTML = html
+        }
+    }
+
+    if(!localStorage.getItem("sound")){
+        localStorage.setItem("sound", "True")
+    }
+
+    function checkSound(){
+        if(localStorage.getItem("sound") === "False"){
+            document.querySelector("audio").pause()
+        }else{
+            document.querySelector("audio").play()
+        }
+    }
+
+    function mute() {
+        if(localStorage.getItem("sound") === "True"){
+            localStorage.setItem("sound", "False")
+        }else{
+            localStorage.setItem("sound", "True")
+        }
+    }
+
+    setInterval(() => {
+        verifySound()
+        checkSound()
+    }, 500)
 
     if(!localStorage.getItem("selectedMode")){
         localStorage.setItem("selectedMode", "NO")
