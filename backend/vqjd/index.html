@@ -391,10 +391,10 @@
                 mattress.cnv.onclick = function() {
                     if(vqjdState.qtState === true && !vqjdState.winQtState){
                         if(vqjdState.y + vqjdState.height/2 >= vqjdState.rectY && vqjdState.y + vqjdState.height/2 <= vqjdState.rectY + 25+Math.pow(5*Math.pow(10,-horse.float),3)){
-                            game.qtEvent({ playerId:playId, thisRoom:thisRoom.thisRoom, hit:true })
+                            game.qtEvent({ playerId:playId, thisRoom:thisRoom.thisRoom, hit:true }, sock)
                             vqjdState.winQtState = true
                         }else{
-                            game.qtEvent({ playerId:playId, thisRoom:thisRoom.thisRoom, hit:false })
+                            game.qtEvent({ playerId:playId, thisRoom:thisRoom.thisRoom, hit:false }, sock)
                             vqjdState.winQtState = true
                         }
                     }
@@ -402,9 +402,12 @@
             }
     }
 
+    let sock
+
     function server() {
 
         const socket = io()
+        sock = socket
 
         socket.on("connect", () => {
             const playerId = socket.id
@@ -426,10 +429,6 @@
             socket.on("delete-room", (command) => {
                 game.analyseForDestroyAloneRooms()
                 socket.emit("delete-room", {type:"delete-room"})
-            })
-
-            socket.on("hit-player", (command) => {
-                alert("chamado")
             })
 
             setTimeout(() => {
