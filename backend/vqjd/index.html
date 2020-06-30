@@ -76,6 +76,20 @@
             if(thisState === STATE.run){
                 if(this.x >= -this.width+800){
                     this.x -= this.velocity
+                }else{
+
+                    const play1 = Object.keys(game.state.rooms[thisRoom.thisRoom])[0]
+                    const play2 = Object.keys(game.state.rooms[thisRoom.thisRoom])[1]
+
+                    const player1 = game.state.rooms[thisRoom.thisRoom][play1]
+                    const player2 = game.state.rooms[thisRoom.thisRoom][play2]
+
+                    if(player1.hit === true && player2.hit === true){
+                        alert("Conseguiram")
+                    }else{
+                        alert("Não conseguiram")
+                    }
+
                 }
             }
         }
