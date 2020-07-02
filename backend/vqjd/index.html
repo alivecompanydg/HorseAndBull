@@ -22,6 +22,8 @@
     let event = ""
     let playId = ""
 
+    let PlayTime = 0
+
     let playerData = ""
     let horse = ""
     let horseVelocity = 0
@@ -86,6 +88,7 @@
 
                     if(player1.hit === true && player2.hit === true){
                         alert("Conseguiram")
+                        endGame(playTime)
                     }else{
                         alert("Não conseguiram")
                     }
@@ -338,6 +341,68 @@
         }
     }
 
+    function calculateTime() {
+        PlayTime++
+    }
+
+    setInterval(calculateTime, 1000)
+
+    function finalEvent(email, time) {
+        let date = new Date()
+        let day = date.getDate()
+        if(day < 10){
+            day = `0${day}`
+        }
+        let month = 1 + date.getMonth()
+        if(month < 10){
+            month = `0${month}`
+        }
+        let year = date.getFullYear()
+        let today = `${day}/${month}/${year}`,
+        eventName = JSON.parse(playerData.event).name
+
+
+        let url = `${host}/winner?email=${email}&time=${time}&eventName=${eventName}&today=${today}`
+
+        fetch(url)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            if(data.message){
+                alert(data.message)
+                window.location.href = "index.html"
+            }else{
+                alert("Parabens, você está em primeiro lugar no evento")
+                window.location.href = "index.html"
+            }
+        } )
+        .catch(err => {
+            alert(err)
+        })
+
+    }
+
+    async function endGame(playTime){
+        let min = Math.floor(playTime/60), sec = playTime % 60
+
+        if(min < 10){
+            min = `0${min}`
+        }
+        if(sec < 10){
+            sec = `0${sec}`
+        }
+
+        if(event){
+            await finalEvent(playerData.email, playTime)
+        }
+        
+        if(!event){
+            window.location.href = "index.html"
+        }
+
+    }
+
     async function initGame(data) {
         playerData = await data[0]
         _playerData = data[0]
@@ -351,6 +416,9 @@
         imgs.player[1].src = `img/${horse.nome}_vaquejada_Stay.png`
         imgs.bull.src = "img/bull.png"
         game = createGame()
+        const url = document.URL
+        const newURL = url.substring(url.length, 29)
+        event = newURL
         server()
         init()
     }

@@ -2,6 +2,41 @@
     let playerData = ""
     let hara = ""
 
+    function verifySound() {
+        if(localStorage.getItem("sound") === "True"){
+            let html = `<img src="img/som.png" onclick="mute()" width="25px" height="25px">`
+            document.querySelector("#soundicon").innerHTML = html
+        }else{
+            let html = `<img src="img/semsom.png" onclick="mute()" width="25px" height="25px">`
+            document.querySelector("#soundicon").innerHTML = html
+        }
+    }
+
+    if(!localStorage.getItem("sound")){
+        localStorage.setItem("sound", "True")
+    }
+
+    function checkSound(){
+        if(localStorage.getItem("sound") === "False"){
+            document.querySelector("audio").pause()
+        }else{
+            document.querySelector("audio").play()
+        }
+    }
+
+    function mute() {
+        if(localStorage.getItem("sound") === "True"){
+            localStorage.setItem("sound", "False")
+        }else{
+            localStorage.setItem("sound", "True")
+        }
+    }
+
+    setInterval(() => {
+        verifySound()
+        checkSound()
+    }, 500)
+
 
     function setDataFromPlayer(local, data) {
         document.getElementById(`${local}`).value = `${data}`.toUpperCase()
@@ -17,8 +52,8 @@
         hara = await JSON.parse(data[0].animals)
         console.log(hara)
         await setDataFromPlayer("playerName", playerData.name)
-        await setDataFromPlayer("coins", `M: ${playerData.coins}`)
-        await setDataFromPlayer("EventCoins", `ME: ${playerData.eventCoins}`)
+        await setDataFromPlayer("coins", `${playerData.coins}`)
+        await setDataFromPlayer("EventCoins", `${playerData.eventCoins}`)
         
     }
 
@@ -46,7 +81,7 @@
 
     function printAn(data) {
 
-        let html = `<br><table id="tabelinha" style="width:90%;">`
+        let html = `<br><table id="tabelinha" border=1 style="width:90%;">`
 
             for(let i in data){
                 array.push(data[i])

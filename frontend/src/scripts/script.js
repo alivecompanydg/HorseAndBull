@@ -117,7 +117,7 @@ async function playevent() {
         break
 
         case "Vaquejada":
-            window.location.href = host
+            window.location.href = `${host}?event=true`
         break
     }
 }
@@ -187,7 +187,7 @@ function printEvents(data) {
 
 async function selectedMode(mode) {
     await localStorage.setItem("selectedMode", mode)
-    window.location.href = host
+    window.location.href = `${host}?event=false`
 }
 
 function printHtml(div, html) {

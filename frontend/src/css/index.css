@@ -197,9 +197,21 @@ v{
     position: absolute;
     width:25px;
     height:25px;
-    background-color: white;
+    background-color:transparent;
     right: 10px;
     top:17px;
+}
+
+.silver{
+    position: absolute;
+    left:53.6%;
+    top:16px;
+}
+
+.gold{
+    position: absolute;
+    left:67%;
+    top:16px;
 }
 
 #tabelinha, td, th{
@@ -211,5 +223,15 @@ v{
 }
 
 #allEvents{
-    color:black;
+    position: absolute;
+    color:white;
+    background-image: url("../../img/bgc.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-y: 48%;
+    left:0px;
+    top:0px;
+    width:100%;
+    height:100%;
+
 }

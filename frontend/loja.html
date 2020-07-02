@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HaB - Loja</title>
-    <link rel="stylesheet" href="src/css/index - Copia.css">
+    <link rel="stylesheet" href="src/css/index.css">
 </head>
 <body>
 
+    <audio loop autoplay>
+        <source src="src/sounds/music_leonell_cassio_a_magical_journey_through_space.mp3" type="audio/mpeg">
+    </audio>
+
     <div id="menu">
         <h1 class="mainMenu" onclick="mainMenu()"><w></w></h1>
-        <label><input type="text" class="noneBorder" readonly id="playerName" style="margin-left: 80px;"><input type="text" style="margin-left: 140px;" class="noneBorder" readonly id="coins"><input type="text" class="noneBorder" readonly id="EventCoins"></label>
+        <label><input type="text" class="noneBorder" readonly id="playerName" style="margin-left: 80px;"><img src="img/moeda_prata.png" style="left:56%;" class="silver" width="25px" height="25px"><input type="text" style="margin-left: 140px;" class="noneBorder" readonly id="coins"><img src="img/moeda_ouro.png" style="left:70%;" class="gold" width="25px" height="25px"><input type="text" class="noneBorder" readonly id="EventCoins"></label>
+        <label id="soundicon"></label>
     </div>
 
     <div id="anuncios"></div>
