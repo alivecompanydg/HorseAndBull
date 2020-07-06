@@ -115,6 +115,7 @@
                 })
                 .then((data) => {
                     alert(`${JSON.parse(item).nome} foi adicionado ao seu hara`)
+                    window.location.href = "loja.html"
                 })
                 .catch((err) => {
                     alert("um erro ocorreu")

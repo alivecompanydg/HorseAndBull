@@ -22,7 +22,7 @@
     let event = ""
     let playId = ""
 
-    let PlayTime = 0
+    let playTime = 0
 
     let playerData = ""
     let horse = ""
@@ -87,10 +87,15 @@
                     const player2 = game.state.rooms[thisRoom.thisRoom][play2]
 
                     if(player1.hit === true && player2.hit === true){
-                        alert("Conseguiram")
+                        //alert("Conseguiram")
+                        players[0].x += 4
+                        players[1].x += 4
                         endGame(playTime)
                     }else{
-                        alert("Não conseguiram")
+                        Bull.x += 4
+                        players[0].x += 4
+                        players[1].x += 4
+                        endGame(playTime)
                     }
 
                 }
@@ -230,15 +235,19 @@
     const Bull = {
 
         srcX:0,
-        srcY:96.25,
-        srcWidth:48,
-        srcHeight:48.125,
+        srcY:0,
+        //srcY:96.25,
+        srcWidth:454,
+        //srcWidth:48,
+        //srcHeight:48.125,
+        srcHeight:340,
         x:-350,
         y:mattress.cnv.height - 275,
         width:290,
-        height:230,
-        animations:3,
-        velocity:4,
+        height:260,
+        animations:12,
+        //animations:3,
+        velocity:3,
         countAnima:0,
 
         draw() {
@@ -342,7 +351,7 @@
     }
 
     function calculateTime() {
-        PlayTime++
+        playTime++
     }
 
     setInterval(calculateTime, 1000)
@@ -361,24 +370,28 @@
         let today = `${day}/${month}/${year}`,
         eventName = JSON.parse(playerData.event).name
 
-
-        let url = `${host}/winner?email=${email}&time=${time}&eventName=${eventName}&today=${today}`
-
-        fetch(url)
-        .then((response) => {
-            return response.json()
+        mattress.configure({
+            host
         })
-        .then((data) => {
+
+        mattress.get(async(data) => {
             if(data.message){
-                alert(data.message)
-                window.location.href = "index.html"
+                let interv = setInterval(() => {
+                window.history.back()
+                clearInterval(interv)
+            }, 3000)
             }else{
                 alert("Parabens, você está em primeiro lugar no evento")
-                window.location.href = "index.html"
+                let interv = setInterval(() => {
+                window.history.back()
+                clearInterval(interv)
+            }, 3000)
             }
-        } )
-        .catch(err => {
-            alert(err)
+        }, "winner", {
+            email,
+            time,
+            eventName,
+            today
         })
 
     }
@@ -393,12 +406,12 @@
             sec = `0${sec}`
         }
 
-        if(event){
+        if(event === "true"){
             await finalEvent(playerData.email, playTime)
-        }
-        
-        if(!event){
-            window.location.href = "index.html"
+        }else{
+            let interv = setTimeout(() => {
+                window.history.back()
+            }, 2000)
         }
 
     }
