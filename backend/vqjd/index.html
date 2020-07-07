@@ -20,7 +20,10 @@
     mattress.center()
 
     let event = ""
+    let lastUrl = ""
     let playId = ""
+
+    let LOOP = true
 
     let playTime = 0
 
@@ -376,16 +379,21 @@
 
         mattress.get(async(data) => {
             if(data.message){
-                let interv = setInterval(() => {
-                window.history.back()
-                clearInterval(interv)
-            }, 3000)
+                if(players[0].x > mattress.cnv.width + 40){
+                LOOP = false
+                let interv = setTimeout(() => {
+                    window.history.back()
+                //window.location.href = lastUrl
+                }, 2500)
+            }
             }else{
-                alert("Parabens, você está em primeiro lugar no evento")
-                let interv = setInterval(() => {
-                window.history.back()
-                clearInterval(interv)
-            }, 3000)
+                if(players[0].x > mattress.cnv.width + 40){
+                LOOP = false
+                let interv = setTimeout(() => {
+                    window.history.back()
+                //window.location.href = lastUrl
+                }, 2500)
+            }
             }
         }, "winner", {
             email,
@@ -409,9 +417,13 @@
         if(event === "true"){
             await finalEvent(playerData.email, playTime)
         }else{
-            let interv = setTimeout(() => {
-                window.history.back()
-            }, 2000)
+            if(players[0].x > mattress.cnv.width + 40){
+                LOOP = false
+                let interv = setTimeout(() => {
+                    window.history.back()
+                //window.location.href = lastUrl
+                }, 2500)
+            }
         }
 
     }
@@ -431,7 +443,8 @@
         game = createGame()
         const url = document.URL
         const newURL = url.substring(url.length, 29)
-        event = newURL
+        event = newURL.substring(0, 5)
+        lastUrl = url.substring(url.length, 43)
         server()
         init()
     }
@@ -445,7 +458,9 @@
     }
 
     function init() {
-        requestAnimationFrame(init, mattress.cnv)
+        if(LOOP){
+            requestAnimationFrame(init, mattress.cnv)
+        }
         mattress.fullScrean()
         update()
         draw()

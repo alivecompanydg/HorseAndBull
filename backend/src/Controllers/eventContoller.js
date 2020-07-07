@@ -72,8 +72,23 @@ module.exports = {
             name: eventName
         })
 
-        if(eventData[0].winner){
-            if( parseInt(eventData[0].bestTime) > parseInt(time) && eventData[0].data === today){
+        if(eventData[0].modal !== "Vaquejada"){
+            if(eventData[0].winner){
+                if( parseInt(eventData[0].bestTime) > parseInt(time) && eventData[0].data === today){
+                    eventData = await Event.update({
+                        winner: email,
+                        bestTime: time
+                    }, {
+                        where: {
+                            name: eventName
+                        }
+                    })
+                }else{
+                    eventData = {
+                        message: "Você não conseguiu ser o primeiro"
+                    }
+                }
+            }else{
                 eventData = await Event.update({
                     winner: email,
                     bestTime: time
@@ -82,10 +97,6 @@ module.exports = {
                         name: eventName
                     }
                 })
-            }else{
-                eventData = {
-                    message: "Você não conseguiu ser o primeiro"
-                }
             }
         }else{
             eventData = await Event.update({
