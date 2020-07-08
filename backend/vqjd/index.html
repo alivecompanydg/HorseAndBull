@@ -250,7 +250,7 @@
         height:260,
         animations:12,
         //animations:3,
-        velocity:3,
+        velocity:2,
         countAnima:0,
 
         draw() {
@@ -264,7 +264,7 @@
                 this.countAnima = 0
             }
 
-            if( this.x + this.width <= mattress.cnv.width/2 + 50 && thisState === STATE.steady){
+            if( this.x + this.width <= mattress.cnv.width/2 + 150 && thisState === STATE.steady){
                 this.x += 3
             }
 
