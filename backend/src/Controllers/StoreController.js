@@ -53,6 +53,8 @@ module.exports = {
             })
             hara = JSON.parse(player[0].animals)
             let Item = JSON.parse(item)
+            Item.float = Math.random()
+            Item.velocidade = Math.floor(Item.float * Item.velocidadeMaxima)
             hara.horse.push(Item)
 
             newData = await Player.update({

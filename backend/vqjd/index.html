@@ -91,6 +91,7 @@
 
                     if(player1.hit === true && player2.hit === true){
                         //alert("Conseguiram")
+                        Bull.win = true
                         players[0].x += 4
                         players[1].x += 4
                         endGame(playTime)
@@ -252,13 +253,37 @@
         //animations:3,
         velocity:2,
         countAnima:0,
+        win:false,
+        rotate:0,
 
         draw() {
-            ctx.drawImage(imgs.bull, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x, this.y, this.width, this.height)
+
+                    const play1 = Object.keys(game.state.rooms[thisRoom.thisRoom])[0]
+                    const play2 = Object.keys(game.state.rooms[thisRoom.thisRoom])[1]
+
+                    const player1 = game.state.rooms[thisRoom.thisRoom][play1]
+                    const player2 = game.state.rooms[thisRoom.thisRoom][play2]
+
+                    if(player1.hit === true && player2.hit === true){
+                        //this.win = true
+                        //alert("Conseguiram")
+                        ctx.save()
+                        ctx.translate(this.x + this.width / 2, this.y + this.height / 2)
+                        ctx.rotate(-this.rotate)
+                        ctx.drawImage(imgs.bull, this.srcX, this.srcY, this.srcWidth, this.srcHeight, -this.width/2, -this.height/2, this.width, this.height)
+                        ctx.restore()
+                    }else{
+                        ctx.drawImage(imgs.bull, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.x, this.y, this.width, this.height)
+                    }
         },
 
         update() {
             this.countAnima++
+            
+            if(this.win && this.rotate <= 3){
+                this.rotate += Math.PI / 180 * (this.velocity * 3)
+                //alert(this.rotate)
+            }
 
             if(this.countAnima >= this.animations*this.velocity){
                 this.countAnima = 0
@@ -488,7 +513,9 @@
     }
 
     function update() {
-        Bull.update()
+        if(Bull.rotate <= 3){
+            Bull.update()
+        }
         statesUpdate.update()
         if(thisState === STATE.run){
             scene.update()
