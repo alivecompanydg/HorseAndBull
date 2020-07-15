@@ -38,8 +38,9 @@
     <div id="menu" style="display: none; background-color: rgb(17, 17, 17);">
 
             <h1 onclick="showMenu()" class="mainMenu"><w></w></h1>
-            <label><input type="text" class="noneBorder" style="background-color: rgb(17, 17, 17);" readonly id="namePlayer"><input type="text" style="background-color: rgb(17, 17, 17);" class="noneBorder" readonly id="coins"><input type="text" style="background-color: rgb(17, 17, 17);" class="noneBorder" readonly id="EventCoins" onclick="withdraw()"></label>
-            
+            <label><input type="text" class="noneBorder" style="background-color: rgb(17, 17, 17);" readonly id="namePlayer"><img src="img/moeda_prata.png" class="silver" width="25px" height="25px"><input type="text" style="background-color: rgb(17, 17, 17);" class="noneBorder" readonly id="coins"><img src="img/moeda_ouro.png" class="gold" width="25px" height="25px"><input type="text" style="background-color: rgb(17, 17, 17);" class="noneBorder" readonly id="EventCoins" onclick="withdraw()"></label>
+            <label id="soundicon"></label>
+
     <div class="rightDiv" id="rightDiv">
 
     </div>
@@ -79,24 +80,24 @@
             <form action="/payment" id="form1" method="post">
 
             <div id="item" class="saco">
-                <img src="img/saco.png" width="70" height="70">
-                <p style="font-size: 19px;"><h3>Saco</h3>contem 100 moedas</p>
+                <img src="img/moedas.png" width="120" height="70">
+                <p style="font-size: 19px;"><h3>Moedas</h3>contem 100 moedas</p>
                 <br>
                 <button class="button" onclick="prepareLinkToBuy('1', playerData.email)">R$10,00</button>
             </div>
 
             <div id="item" class="caixa">
-                <img src="img/box.png" width="70" height="70">
-                <p style="font-size: 19px;"><h3>Caixa</h3>contem 150 moedas</p>
+                <img src="img/saco.png" width="80px" height="80px">
+                <p style="font-size: 19px;"><h3>Saco</h3>contem 150 moedas</p>
                 <br>
-                <button class="button" onclick="prepareLinkToBuy('2', playerData.email)">R$15,00</button>
+                <button class="button" style="margin-top:15px;" onclick="prepareLinkToBuy('2', playerData.email)">R$15,00</button>
             </div>
 
             <div id="item" class="bau">
-                <img src="img/bau.png" width="70" height="70">
+                <img src="img/bau.png" style="margin-top:-20px;" width="130px" height="115px">
                 <p style="font-size: 19px;"><h3>Baú</h3>contem 200 moedas</p>
                 <br>
-                    <button class="button" onclick="prepareLinkToBuy('3', playerData.email)">R$20,00</button>
+                    <button class="button" style="margin-top:3px;" onclick="prepareLinkToBuy('3', playerData.email)">R$20,00</button>
             </div>
 
         </form>
@@ -122,6 +123,41 @@
     </div>
 
     <script>
+
+    function verifySound() {
+        if(localStorage.getItem("sound") === "True"){
+            let html = `<img src="img/som.png" onclick="mute()" width="25px" height="25px">`
+            document.querySelector("#soundicon").innerHTML = html
+        }else{
+            let html = `<img src="img/semsom.png" onclick="mute()" width="25px" height="25px">`
+            document.querySelector("#soundicon").innerHTML = html
+        }
+    }
+
+    if(!localStorage.getItem("sound")){
+        localStorage.setItem("sound", "True")
+    }
+
+    function checkSound(){
+        if(localStorage.getItem("sound") === "False"){
+            document.querySelector("audio").pause()
+        }else{
+            document.querySelector("audio").play()
+        }
+    }
+
+    function mute() {
+        if(localStorage.getItem("sound") === "True"){
+            localStorage.setItem("sound", "False")
+        }else{
+            localStorage.setItem("sound", "True")
+        }
+    }
+
+    setInterval(() => {
+        verifySound()
+        checkSound()
+    }, 500)
 
     if(!localStorage.getItem("selectedMode")){
         localStorage.setItem("selectedMode", "NO")
@@ -266,9 +302,9 @@
         hara = await JSON.parse(data[0].animals)
         console.table(hara)
         await setDataFromPlayer("namePlayer", playerData.name)
-        await setDataFromPlayer("coins", `M: ${playerData.coins}`)
-        await setDataFromPlayer("Coins", `M: ${playerData.coins}`)
-        await setDataFromPlayer("EventCoins", `ME: ${playerData.eventCoins}`)
+        await setDataFromPlayer("coins", `${playerData.coins}`)
+        await setDataFromPlayer("Coins", `${playerData.coins}`)
+        await setDataFromPlayer("EventCoins", `${playerData.eventCoins}`)
         await setHorseData(array)
         document.getElementById("newPlayerForm").style.display = "none"
         await changeDisplay(document.getElementById("menu"))
