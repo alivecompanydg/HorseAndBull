@@ -1,4 +1,4 @@
-
+//const host = "http://serveousercontent.com:3000"
 const host = "http://localhost:3000"
 const mattress = new Mattress()
 let FloatNum = Math.random()
