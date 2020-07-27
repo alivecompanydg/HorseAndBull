@@ -23,6 +23,8 @@
     let lastUrl = ""
     let playId = ""
 
+    let sync = false
+
     let LOOP = true
 
     let playTime = 0
@@ -106,6 +108,21 @@
             }
         }
 
+    }
+
+    function addBOT() {
+        if(!sync){
+            if(playTime > 30 && playTime < 32){
+                const confi = confirm("Deseja adicionar um bot ao jogo?")
+                if(confi) {
+                    alert("Bot adicionado ao jogo")
+                    sync = true
+                }else{
+                    alert("Bot não adicionado")
+                    sync = true
+                }
+            }
+        }
     }
 
     class Player{
@@ -516,6 +533,7 @@
         if(Bull.rotate <= 3){
             Bull.update()
         }
+        addBOT()
         statesUpdate.update()
         if(thisState === STATE.run){
             scene.update()

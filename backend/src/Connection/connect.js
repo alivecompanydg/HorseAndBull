@@ -1,7 +1,7 @@
 
 const Sequelize = require("sequelize")
 
-const sequelize = new Sequelize("HandB", "root", "", {
+const sequelize = new Sequelize("handb", "root", "", {
     host: 3306,
     dialect: "mysql"
 })
