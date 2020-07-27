@@ -24,6 +24,8 @@
     let playId = ""
 
     let sync = false
+    let boot = false
+    let bootName = ""
 
     let LOOP = true
 
@@ -111,12 +113,28 @@
     }
 
     function addBOT() {
-        if(!sync){
+        if(!sync && players.length < 2){
             if(playTime > 30 && playTime < 32){
                 const confi = confirm("Deseja adicionar um bot ao jogo?")
                 if(confi) {
                     alert("Bot adicionado ao jogo")
+                    const cavalos = ["Brave", "Eclipse", "Kenia"]
+                    const situations = [true, false]
+                    bootName = `${Math.random()}`
+
+                    const obj = {
+                        playerId:bootName,
+                        name:"BOT",
+                        horse: { nome: cavalos[Math.floor(Math.random() * 3)]},
+                        room:thisRoom.thisRoom,
+                        hit:situations[Math.floor(Math.random() * 2)]
+                    }
+
+                    game.modifyState(obj)
+                    sock.emit("setup", game.state)
+                    players.push(new Player())
                     sync = true
+                    boot = true
                 }else{
                     alert("Bot não adicionado")
                     sync = true
@@ -424,7 +442,13 @@
                 if(players[0].x > mattress.cnv.width + 40){
                 LOOP = false
                 let interv = setTimeout(() => {
-                    window.history.back()
+                    if(boot){
+                        game.removePlayer({playerId:bootName})
+                        sock.emit("setup", game.state)
+                        window.history.back()
+                    }else{
+                        window.history.back()
+                    }
                 //window.location.href = lastUrl
                 }, 2500)
             }
@@ -432,7 +456,13 @@
                 if(players[0].x > mattress.cnv.width + 40){
                 LOOP = false
                 let interv = setTimeout(() => {
-                    window.history.back()
+                    if(boot){
+                        game.removePlayer({playerId:bootName})
+                        sock.emit("setup", game.state)
+                        window.history.back()
+                    }else{
+                        window.history.back()
+                    }
                 //window.location.href = lastUrl
                 }, 2500)
             }
@@ -462,7 +492,13 @@
             if(players[0].x > mattress.cnv.width + 40){
                 LOOP = false
                 let interv = setTimeout(() => {
-                    window.history.back()
+                    if(boot){
+                        game.removePlayer({playerId:bootName})
+                        sock.emit("setup", game.state)
+                        window.history.back()
+                    }else{
+                        window.history.back()
+                    }
                 //window.location.href = lastUrl
                 }, 2500)
             }
