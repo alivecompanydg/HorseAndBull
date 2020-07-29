@@ -113,7 +113,7 @@
     }
 
     function addBOT() {
-        if(!sync && players.length < 2){
+        if(!sync){
             if(playTime > 30 && playTime < 32){
                 const confi = confirm("Deseja adicionar um bot ao jogo?")
                 if(confi) {
@@ -357,7 +357,7 @@
             stateUpdate.seeState(game.state.rooms)
             game.analyseForDestroyAloneRooms()
         }, 600)
-    }, 300)
+    }, 600)
 
     const vqjdState = {
         imgLocation:0,
@@ -569,7 +569,9 @@
         if(Bull.rotate <= 3){
             Bull.update()
         }
-        addBOT()
+        if(players.length === 1){
+            addBOT()
+        }
         statesUpdate.update()
         if(thisState === STATE.run){
             scene.update()
