@@ -15,7 +15,7 @@
     "nodemon": "^2.0.4",
     "paypal-rest-sdk": "^1.8.1",
     "sequelize": "^5.21.4",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.5.0"
   },
   "description": ""
 }
